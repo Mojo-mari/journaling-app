@@ -1,0 +1,49 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif+JP:wght@400;700&display=swap');
+
+@theme {
+  --color-cream-50: #fdfcf7;
+  --color-cream-100: #f9f7e8;
+  --color-cream-200: #f2eed1;
+  --color-cream-300: #e6dfa8;
+  --color-cream-default: #f9f7e8;
+
+  --color-paper-text: #3a3a3a;
+  --color-paper-border: #d1cebd;
+  
+  --font-serif: "Noto Serif JP", "Georgia", serif;
+}
+
+/* ブラウザやOSのダークモード設定を無効化し、生成り色の背景を強制します */
+:root {
+  background-color: #f9f7e8 !important;
+  color: #3a3a3a !important;
+  color-scheme: light !important;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f9f7e8 !important;
+  color: #3a3a3a !important;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+/* スクロールバーのカスタマイズ（アナログ感を出すため） */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f9f7e8;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1cebd;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b8b5a0;
+}
