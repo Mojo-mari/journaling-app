@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { db, type TimelineEvent } from '../db';
+import { type TimelineEvent } from '../db';
 import { Clock, Trash2, X, RefreshCw } from 'lucide-react';
 import { useGoogleLogin } from '@react-oauth/google';
 import { initGapi, listUpcomingEvents } from '../lib/googleCalendar';

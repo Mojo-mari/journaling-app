@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from './db';
-import { Search, Calendar, ChevronRight, Hash, Target, Heart, Sparkles, BookOpen } from 'lucide-react';
+import { Search, Calendar, ChevronRight, Target, Sparkles, BookOpen } from 'lucide-react';
 
 interface HistoryViewProps {
   onEntrySelect: (date: Date, view: EntryType) => void;
@@ -18,7 +18,7 @@ interface SearchResult {
   timestamp: number;
 }
 
-const HistoryView: React.FC<HistoryViewProps> = ({ onDateSelect }) => {
+const HistoryView: React.FC<HistoryViewProps> = ({ onEntrySelect }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState<EntryType | 'all'>('all');
 

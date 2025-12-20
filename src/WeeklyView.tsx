@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, type WeeklyTask, type WeeklyEntry } from './db';
 import { CheckCircle2, Circle, Plus, Trash2, Calendar as CalendarIcon, Target, ListTodo, MoreHorizontal, X } from 'lucide-react';
-import { format, startOfWeek } from 'date-fns';
+import { startOfWeek } from 'date-fns';
 import Calendar from './components/Calendar';
 
 interface TaskInputProps {

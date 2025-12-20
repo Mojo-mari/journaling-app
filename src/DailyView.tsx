@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db, type DailyEntry, type WeeklyEntry, type TimelineEvent, type DailyTask, type Habit } from './db';
+import { db, type DailyEntry, type TimelineEvent, type DailyTask } from './db';
 import { Calendar as CalendarIcon, Sun, Heart, CheckCircle2, Circle, Star, ListChecks, CheckSquare, Square, Plus, X } from 'lucide-react';
 import EditableField from './components/EditableField';
 import Timeline from './components/Timeline';
@@ -348,7 +348,10 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
             <div>
               <h2 className="text-[11px] uppercase tracking-[0.2em] text-paper-text/50 mb-4 font-bold">Secondary Tasks</h2>
               <div className="space-y-4">
-                {(entry?.secondaryTasks || [{}, {}]).map((task, i) => (
+                {(entry?.secondaryTasks || [
+                  { id: 'sec-1', text: '', completed: false },
+                  { id: 'sec-2', text: '', completed: false }
+                ]).map((task, i) => (
                   <div key={task.id || i} className="flex items-center px-2">
                     <button onClick={() => toggleTask('secondaryTasks', task.id)} className="mr-3">
                       {task.completed ? 
