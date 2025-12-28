@@ -48,46 +48,58 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
 
   // 2. All functions
   const saveEntry = async (updates: Partial<DailyEntry>) => {
-    const currentEntry = entry || {
-      id: dateId,
-      date: dateId,
-      gratitude: ['', '', ''],
-      intention: '',
-      mostImportantTask: { id: Math.random().toString(36).substring(2), text: '', completed: false, sessions: 0 },
-      secondaryTasks: [
-        { id: Math.random().toString(36).substring(2), text: '', completed: false },
-        { id: Math.random().toString(36).substring(2), text: '', completed: false }
-      ],
-      additionalTasks: [
-        { id: Math.random().toString(36).substring(2), text: '', completed: false },
-        { id: Math.random().toString(36).substring(2), text: '', completed: false }
-      ],
-      habitCompletion: {},
-      highlight: '',
-      learning: '',
-      remember: '',
-      mood: 0,
-      rateDay: 0,
-      timeline: [],
-      updatedAt: Date.now(),
-    };
-    await db.dailyEntries.put({ ...currentEntry, ...updates, updatedAt: Date.now() });
+    try {
+      const currentEntry = entry || {
+        id: dateId,
+        date: dateId,
+        gratitude: ['', '', ''],
+        intention: '',
+        mostImportantTask: { id: Math.random().toString(36).substring(2), text: '', completed: false, sessions: 0 },
+        secondaryTasks: [
+          { id: Math.random().toString(36).substring(2), text: '', completed: false },
+          { id: Math.random().toString(36).substring(2), text: '', completed: false }
+        ],
+        additionalTasks: [
+          { id: Math.random().toString(36).substring(2), text: '', completed: false },
+          { id: Math.random().toString(36).substring(2), text: '', completed: false }
+        ],
+        habitCompletion: {},
+        highlight: '',
+        learning: '',
+        remember: '',
+        mood: 0,
+        rateDay: 0,
+        timeline: [],
+        updatedAt: Date.now(),
+      };
+      await db.dailyEntries.put({ ...currentEntry, ...updates, updatedAt: Date.now() });
+    } catch (error) {
+      console.error('Failed to save entry:', error);
+    }
   };
 
   const addHabit = async () => {
     if (newHabitName.trim()) {
-      await db.habits.add({
-        id: Math.random().toString(36).substring(2),
-        name: newHabitName.trim(),
-        createdAt: Date.now()
-      });
-      setNewHabitName('');
+      try {
+        await db.habits.add({
+          id: Math.random().toString(36).substring(2),
+          name: newHabitName.trim(),
+          createdAt: Date.now()
+        });
+        setNewHabitName('');
+      } catch (error) {
+        console.error('Failed to add habit:', error);
+      }
     }
   };
 
   const deleteHabit = async (habitId: string) => {
-    if (confirm('この習慣を削除してもよろしいですか？')) {
-      await db.habits.delete(habitId);
+    try {
+      if (window.confirm('この習慣を削除してもよろしいですか？')) {
+        await db.habits.delete(habitId);
+      }
+    } catch (error) {
+      console.error('Failed to delete habit:', error);
     }
   };
 
@@ -245,9 +257,11 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
                     Weekly Actions for Goals
                   </h2>
                   <div className="space-y-2">
-                    {Object.entries(weeklyEntry.yearlyGoalActions).slice(0, 5).map(([index, action]: [string, any]) => {
-                      const actionText = typeof action === 'object' ? action.text : action;
-                      const isCompleted = typeof action === 'object' ? action.completed : false;
+                    {Object.keys(weeklyEntry.yearlyGoalActions).slice(0, 5).map((index) => {
+                      const action = weeklyEntry.yearlyGoalActions?.[Number(index)];
+                      if (!action) return null;
+                      const actionText = typeof action === 'object' && action !== null ? action.text : '';
+                      const isCompleted = typeof action === 'object' && action !== null ? action.completed : false;
                       if (!actionText) return null;
                       
                       return (

@@ -114,3 +114,11 @@ export class JournalDatabase extends Dexie {
 }
 
 export const db = new JournalDatabase();
+
+// Safari Private Browsing / IndexedDB availability check
+db.open().catch((error) => {
+  console.error('Failed to open database:', error);
+  if (error.name === 'InvalidStateError' || error.message?.includes('private')) {
+    console.warn('IndexedDB is not available. You may be in Private Browsing mode.');
+  }
+});
