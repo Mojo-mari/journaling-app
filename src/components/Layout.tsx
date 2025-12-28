@@ -35,26 +35,8 @@ const Layout: React.FC<LayoutProps> = ({
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-cream-100 text-paper-text font-sans selection:bg-cream-300">
       {/* Sidebar / Navigation - Sophisticated Style */}
-      <nav className="w-full md:w-20 lg:w-72 bg-cream-50/80 backdrop-blur-md border-r border-paper-border/50 flex flex-col items-center py-4 md:py-8 px-4 z-20 shadow-[4px_0_24px_-4px_rgba(0,0,0,0.02)]">
-        {/* Logo Section */}
-        <div className="mb-8 md:mb-12 flex flex-row md:flex-col items-center justify-between w-full md:justify-start">
-          <div className="flex items-center md:flex-col md:items-start lg:items-center">
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-paper-text text-cream-50 rounded-2xl flex items-center justify-center shadow-lg transform transition-transform hover:scale-105 duration-300 md:mb-4">
-              <LayoutIcon className="w-5 h-5 md:w-6 md:h-6" />
-            </div>
-            <h1 className="ml-3 md:ml-0 lg:block font-serif text-xl font-bold italic tracking-tight hidden md:hidden lg:block text-paper-text">Journal</h1>
-          </div>
-          
-          {/* Mobile Calendar Toggle */}
-          <button 
-            onClick={() => setIsCalendarOpen(true)}
-            className="p-2 rounded-xl hover:bg-cream-200/50 text-paper-text/60 lg:hidden transition-all duration-200"
-          >
-            <CalendarIcon className="w-6 h-6" />
-          </button>
-        </div>
-
-        <div className="flex flex-row md:flex-col flex-grow space-x-2 md:space-x-0 md:space-y-3 w-full overflow-x-auto no-scrollbar pb-2 md:pb-0">
+      <nav className="w-full md:w-20 lg:w-72 bg-cream-50/80 backdrop-blur-md border-r border-paper-border/50 flex flex-col items-center py-2 md:py-8 px-4 z-20 shadow-[4px_0_24px_-4px_rgba(0,0,0,0.02)]">
+        <div className="flex flex-row md:flex-col flex-grow space-x-2 md:space-x-0 md:space-y-3 w-full overflow-x-auto no-scrollbar pb-0 md:pb-0 justify-center md:justify-start">
           {navItems.map((item) => {
             const isActive = currentView === item.id;
             return (
