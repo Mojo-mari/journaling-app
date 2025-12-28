@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, type YearlyEntry, type YearlyGoal } from './db';
-import { Sparkles, Target, BookOpen, Plus, Trash2, CheckCircle2, Circle, X, Calendar as CalendarIcon, ArrowRight } from 'lucide-react';
+import { Sparkles, Target, BookOpen, CheckCircle2, Circle, X, Calendar as CalendarIcon, ArrowRight } from 'lucide-react';
 import EditableField from './components/EditableField';
 import Calendar from './components/Calendar';
 
@@ -182,10 +182,10 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
     <div className="p-6 md:p-10 min-h-screen pb-20">
       <header className="mb-10 border-b border-paper-border pb-6 flex justify-between items-end">
         <div>
-          <h1 className="text-4xl font-serif text-paper-text font-bold tracking-tight">Yearly Planning</h1>
+          <h1 className="text-4xl font-serif text-paper-text italic font-bold tracking-tight">Yearly Planning</h1>
           <button 
             onClick={() => setIsCalendarOpen(true)}
-            className="text-paper-text opacity-60 flex items-center mt-2 font-medium text-2xl font-serif hover:opacity-100 hover:bg-cream-200 px-2 py-1 rounded-lg transition-all -ml-2"
+            className="text-paper-text opacity-60 flex items-center mt-2 font-medium text-2xl font-serif italic hover:opacity-100 hover:bg-cream-200 px-2 py-1 rounded-lg transition-all -ml-2"
           >
             <CalendarIcon className="w-6 h-6 mr-2" />
             {yearId}
@@ -221,7 +221,7 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
             value={entry?.theme || ''}
             onSave={(val) => saveEntry({ theme: val })}
             placeholder="今年一年の中心となるテーマや指針を入力..."
-            className="w-full bg-cream-100/30 border border-paper-border/20 rounded-2xl p-6 focus:outline-none focus:ring-1 focus:ring-paper-border/50 min-h-[100px] text-xl font-serif shadow-inner transition-all text-center placeholder:text-paper-text/10"
+            className="w-full bg-cream-100/30 border border-paper-border/20 rounded-2xl p-6 focus:outline-none focus:ring-1 focus:ring-paper-border/50 min-h-[100px] text-xl font-serif italic shadow-inner transition-all text-center placeholder:text-paper-text/10"
           />
         </section>
 
@@ -291,7 +291,7 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
                         <td className="sticky left-0 z-10 p-4 border-r border-paper-border/10 bg-cream-50/95 backdrop-blur-sm shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">
                           <div className="flex flex-col">
                             <span className="text-[9px] font-bold text-paper-text/30 mb-1">GOAL {goalIndex + 1}</span>
-                            <span className={`text-xs font-serif font-bold text-paper-text/70 line-clamp-2 min-h-[2.5rem] ${goal?.completed ? 'line-through opacity-30' : ''}`}>
+                            <span className={`text-xs font-serif italic font-bold text-paper-text/70 line-clamp-2 min-h-[2.5rem] ${goal?.completed ? 'line-through opacity-30' : ''}`}>
                               {goal?.text || `(目標 ${goalIndex + 1} を未入力)`}
                             </span>
                           </div>
@@ -367,7 +367,7 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
                     </span>
                   </div>
                   <div className="mb-4">
-                    <p className={`text-[11px] font-serif font-bold text-paper-text/60 line-clamp-2 min-h-[2rem] ${goal?.completed ? 'line-through opacity-30' : ''}`}>
+                    <p className={`text-[11px] font-serif italic font-bold text-paper-text/60 line-clamp-2 min-h-[2rem] ${goal?.completed ? 'line-through opacity-30' : ''}`}>
                       {goal?.text || `(目標 ${i + 1} 未入力)`}
                     </p>
                   </div>
@@ -376,7 +376,7 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
                     value={goal?.reflection || ''}
                     onSave={(val) => updateGoalReflection(i, val)}
                     placeholder="この目標についての振り返りを記入..."
-                    className="w-full bg-white/40 border border-paper-border/10 rounded-xl p-3 font-serif focus:outline-none focus:bg-white/80 text-xs min-h-[120px] shadow-inner transition-all"
+                    className="w-full bg-white/40 border border-paper-border/10 rounded-xl p-3 font-serif italic focus:outline-none focus:bg-white/80 text-xs min-h-[120px] shadow-inner transition-all placeholder:italic"
                   />
                 </div>
               );

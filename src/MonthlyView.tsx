@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db, type MonthlyEntry, type YearlyEntry } from './db';
+import { db, type MonthlyEntry } from './db';
 import { Calendar as CalendarIcon, Target, BookOpen, Plus, Trash2, CheckCircle2, Circle, X, Layout } from 'lucide-react';
 import EditableField from './components/EditableField';
 import Calendar from './components/Calendar';
@@ -88,10 +88,10 @@ const MonthlyView: React.FC<MonthlyViewProps> = ({ selectedDate, onDateSelect })
   return (
     <div className="p-6 md:p-10 min-h-screen">
       <header className="mb-10 border-b border-paper-border pb-6">
-        <h1 className="text-4xl font-serif text-paper-text font-bold tracking-tight">Monthly Planning</h1>
+        <h1 className="text-4xl font-serif text-paper-text italic font-bold tracking-tight">Monthly Planning</h1>
         <button 
           onClick={() => setIsCalendarOpen(true)}
-          className="text-paper-text opacity-60 flex items-center mt-2 font-medium hover:opacity-100 hover:bg-cream-200 px-2 py-1 rounded-lg transition-all -ml-2 font-serif text-2xl"
+          className="text-paper-text opacity-60 flex items-center mt-2 font-medium hover:opacity-100 hover:bg-cream-200 px-2 py-1 rounded-lg transition-all -ml-2 font-serif italic text-2xl"
         >
           <CalendarIcon className="w-4 h-4 mr-2" />
           {displayMonth}
@@ -132,7 +132,7 @@ const MonthlyView: React.FC<MonthlyViewProps> = ({ selectedDate, onDateSelect })
                 <div key={i} className="bg-white/60 p-4 rounded-2xl border border-paper-border/20 shadow-sm flex flex-col">
                   <div className="flex flex-col mb-2">
                     <span className="text-[8px] font-bold text-paper-text/30 uppercase tracking-widest mb-0.5">Yearly Goal {i + 1}</span>
-                    <span className="text-[10px] font-serif font-bold text-paper-text/60 line-clamp-1">
+                    <span className="text-[10px] font-serif italic font-bold text-paper-text/60 line-clamp-1">
                       {yearlyGoal?.text || `(目標 ${i + 1} 未入力)`}
                     </span>
                   </div>
@@ -149,7 +149,7 @@ const MonthlyView: React.FC<MonthlyViewProps> = ({ selectedDate, onDateSelect })
                         value={actionText}
                         onSave={(val) => updateYearlyTaskText(i, val)}
                         placeholder="アクション..."
-                        className={`text-[11px] leading-snug font-serif flex-grow bg-transparent focus:outline-none min-h-[40px] ${isCompleted ? 'line-through opacity-40' : ''}`}
+                        className={`text-[11px] leading-snug font-serif italic flex-grow bg-transparent focus:outline-none min-h-[40px] ${isCompleted ? 'line-through opacity-40' : ''}`}
                       />
                     </div>
                   </div>
@@ -199,7 +199,7 @@ const MonthlyView: React.FC<MonthlyViewProps> = ({ selectedDate, onDateSelect })
                       value={goal.text}
                       onSave={(val) => updateGoal(goal.id, val)}
                       placeholder="目標を入力..."
-                      className={`flex-grow bg-transparent font-serif focus:outline-none text-sm ${goal.completed ? 'line-through opacity-40' : ''}`}
+                      className={`flex-grow bg-transparent font-serif italic focus:outline-none text-sm ${goal.completed ? 'line-through opacity-40' : ''}`}
                     />
                     <button onClick={() => deleteGoal(goal.id)} className="opacity-0 group-hover:opacity-100 ml-2 p-1">
                       <Trash2 className="w-4 h-4 text-rose-400" />

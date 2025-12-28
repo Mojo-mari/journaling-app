@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db, type WeeklyTask, type WeeklyEntry, type YearlyEntry } from './db';
-import { CheckCircle2, Circle, Plus, Trash2, Calendar as CalendarIcon, Target, ListTodo, MoreHorizontal, X, Layout, ArrowRight } from 'lucide-react';
-import { startOfWeek, getMonth } from 'date-fns';
+import { db, type WeeklyTask, type WeeklyEntry } from './db';
+import { CheckCircle2, Circle, Plus, Trash2, Calendar as CalendarIcon, Target, ListTodo, X, Layout } from 'lucide-react';
+import { startOfWeek } from 'date-fns';
 import Calendar from './components/Calendar';
 import EditableField from './components/EditableField';
 
@@ -40,7 +40,7 @@ const TaskItem: React.FC<TaskInputProps> = ({ task, type, onUpdate, onToggle, on
             onUpdate(type, task.id, localText);
           }
         }}
-        className={`flex-grow bg-transparent font-serif focus:outline-none py-1 transition-all ${isLarge ? 'font-medium' : 'text-sm'} ${task.completed ? 'line-through opacity-40' : 'text-paper-text'}`}
+        className={`flex-grow bg-transparent font-serif italic focus:outline-none py-1 transition-all ${isLarge ? 'font-medium' : 'text-sm'} ${task.completed ? 'line-through opacity-40' : 'text-paper-text'}`}
         placeholder={placeholder}
       />
       <button onClick={() => onDelete(type, task.id)} className={`opacity-0 group-hover:opacity-30 hover:!opacity-100 ml-2 transition-all p-1`}>
@@ -132,30 +132,6 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ selectedDate, onDateSelect }) =
     await saveEntry({ [type]: updatedTasks });
   };
 
-  const toggleYearlyTask = async (goalIndex: number) => {
-    if (!yearlyEntry) return;
-    const goals = [...yearlyEntry.goals];
-    if (goals[goalIndex]) {
-      const monthlyActions = { ...(goals[goalIndex].monthlyActions || {}) };
-      const currentAction = monthlyActions[monthNum] || { text: '', completed: false };
-      monthlyActions[monthNum] = { ...currentAction, completed: !currentAction.completed };
-      goals[goalIndex].monthlyActions = monthlyActions;
-      await db.yearlyEntries.put({ ...yearlyEntry, goals, updatedAt: Date.now() });
-    }
-  };
-
-  const updateYearlyTaskText = async (goalIndex: number, text: string) => {
-    if (!yearlyEntry) return;
-    const goals = [...yearlyEntry.goals];
-    if (goals[goalIndex]) {
-      const monthlyActions = { ...(goals[goalIndex].monthlyActions || {}) };
-      const currentAction = monthlyActions[monthNum] || { text: '', completed: false };
-      monthlyActions[monthNum] = { ...currentAction, text };
-      goals[goalIndex].monthlyActions = monthlyActions;
-      await db.yearlyEntries.put({ ...yearlyEntry, goals, updatedAt: Date.now() });
-    }
-  };
-
   const updateWeeklyGoalAction = async (goalIndex: number, text: string) => {
     const currentActions = entry?.yearlyGoalActions || {};
     const currentAction = currentActions[goalIndex] || { text: '', completed: false };
@@ -176,10 +152,10 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ selectedDate, onDateSelect }) =
     <div className="p-6 md:p-10 min-h-screen pb-20">
       <header className="mb-10 flex justify-between items-end border-b border-paper-border pb-6">
         <div>
-          <h1 className="text-4xl font-serif text-paper-text font-bold tracking-tight">Weekly Planning</h1>
+          <h1 className="text-4xl font-serif text-paper-text italic font-bold tracking-tight">Weekly Planning</h1>
           <button 
             onClick={() => setIsCalendarOpen(true)}
-            className="text-paper-text opacity-60 flex items-center mt-2 font-medium hover:opacity-100 hover:bg-cream-200 px-2 py-1 rounded-lg transition-all -ml-2 font-serif text-2xl"
+            className="text-paper-text opacity-60 flex items-center mt-2 font-medium hover:opacity-100 hover:bg-cream-200 px-2 py-1 rounded-lg transition-all -ml-2 font-serif italic text-2xl"
           >
             <CalendarIcon className="w-4 h-4 mr-2" />
             Week {weekNumber}, {yearId}
@@ -224,7 +200,7 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ selectedDate, onDateSelect }) =
                 <div key={i} className="bg-white/60 p-4 rounded-2xl border border-paper-border/20 shadow-sm flex flex-col">
                   <div className="flex flex-col mb-2">
                     <span className="text-[8px] font-bold text-paper-text/30 uppercase tracking-widest mb-0.5">Goal {i + 1}</span>
-                    <span className="text-[10px] font-serif font-bold text-paper-text/60 line-clamp-1" title={actionText || '今月のアクション未設定'}>
+                    <span className="text-[10px] font-serif italic font-bold text-paper-text/60 line-clamp-1" title={actionText || '今月のアクション未設定'}>
                       {actionText || `(今月のアクション未設定)`}
                     </span>
                   </div>
@@ -241,7 +217,7 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ selectedDate, onDateSelect }) =
                         value={weeklyText}
                         onSave={(val) => updateWeeklyGoalAction(i, val)}
                         placeholder="今週やることは？"
-                        className={`text-[11px] leading-snug font-serif flex-grow bg-transparent focus:outline-none min-h-[40px] placeholder:text-paper-text/20 ${isWeeklyCompleted ? 'line-through opacity-40' : ''}`}
+                        className={`text-[11px] leading-snug font-serif italic flex-grow bg-transparent focus:outline-none min-h-[40px] placeholder:text-paper-text/20 ${isWeeklyCompleted ? 'line-through opacity-40' : ''}`}
                       />
                     </div>
                   </div>
@@ -265,7 +241,7 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ selectedDate, onDateSelect }) =
                 }
               }}
               placeholder="今週の意図を書き込みましょう..."
-              className="w-full bg-cream-100/50 border border-paper-border/20 rounded-xl p-4 focus:outline-none focus:ring-1 focus:ring-paper-border/50 min-h-[150px] text-sm font-serif shadow-inner transition-all"
+              className="w-full bg-cream-100/50 border border-paper-border/20 rounded-xl p-4 focus:outline-none focus:ring-1 focus:ring-paper-border/50 min-h-[150px] text-sm font-serif italic shadow-inner transition-all placeholder:italic"
             />
           </section>
         </div>

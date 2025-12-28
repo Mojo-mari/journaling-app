@@ -34,7 +34,7 @@ const Layout: React.FC<LayoutProps> = ({
             <div className="w-10 h-10 md:w-12 md:h-12 bg-paper-text rounded-xl flex items-center justify-center text-cream-50 shadow-lg md:mb-2">
               <LayoutIcon className="w-6 h-6 md:w-7 md:h-7" />
             </div>
-            <h1 className="ml-3 md:ml-0 lg:block font-serif text-xl font-bold tracking-tight hidden md:hidden lg:block">Journal</h1>
+            <h1 className="ml-3 md:ml-0 lg:block font-serif text-xl font-bold italic tracking-tight hidden md:hidden lg:block">Journal</h1>
           </div>
           
           {/* Mobile Calendar Toggle */}

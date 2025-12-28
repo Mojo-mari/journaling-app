@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, type DailyEntry, type TimelineEvent, type DailyTask } from './db';
-import { Calendar as CalendarIcon, Sun, Heart, CheckCircle2, Circle, Star, ListChecks, CheckSquare, Square, Plus, X, Target } from 'lucide-react';
+import { Calendar as CalendarIcon, Sun, Heart, CheckCircle2, Circle, Star, ListChecks, CheckSquare, Square, X, Target, Trash2 } from 'lucide-react';
 import EditableField from './components/EditableField';
 import Timeline from './components/Timeline';
 import Calendar from './components/Calendar';
@@ -126,10 +126,10 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
     <div className="p-6 md:p-10 min-h-screen">
       <header className="mb-10 flex flex-col md:flex-row md:justify-between md:items-end border-b border-paper-border pb-6 gap-4">
         <div>
-          <h1 className="text-4xl font-serif text-paper-text font-bold tracking-tight">Daily Planning</h1>
+          <h1 className="text-4xl font-serif text-paper-text italic font-bold tracking-tight">Daily Planning</h1>
           <button 
             onClick={() => setIsCalendarOpen(true)}
-            className="text-paper-text opacity-60 flex items-center mt-2 font-medium hover:opacity-100 hover:bg-cream-200 px-2 py-1 rounded-lg transition-all -ml-2 font-serif text-2xl"
+            className="text-paper-text opacity-60 flex items-center mt-2 font-medium hover:opacity-100 hover:bg-cream-200 px-2 py-1 rounded-lg transition-all -ml-2 font-serif italic text-2xl"
           >
             <CalendarIcon className="w-4 h-4 mr-2" />
             {dateString}
@@ -194,7 +194,7 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
               value={entry?.intention || ''}
               onSave={(val) => saveEntry({ intention: val })}
               placeholder="今日一日の意図や目標を入力..."
-              className="w-full bg-cream-100/30 border border-paper-border/20 rounded-xl p-4 focus:outline-none focus:ring-1 focus:ring-paper-border/50 min-h-[100px] text-sm font-serif shadow-inner transition-all"
+              className="w-full bg-cream-100/30 border border-paper-border/20 rounded-xl p-4 focus:outline-none focus:ring-1 focus:ring-paper-border/50 min-h-[100px] text-sm font-serif italic shadow-inner transition-all placeholder:italic"
             />
           </section>
 
@@ -208,7 +208,7 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
             <div className="space-y-4">
               {[0, 1, 2].map((i) => (
                 <div key={i} className="flex items-center gap-3">
-                  <span className="text-paper-text/30 text-sm">{i + 1}.</span>
+                  <span className="text-paper-text/30 font-serif italic text-sm">{i + 1}.</span>
                   <EditableField
                     value={entry?.gratitude?.[i] || ''}
                     onSave={(val) => updateGratitude(i, val)}
@@ -365,7 +365,7 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
             type="textarea"
             value={entry?.highlight || ''}
             onSave={(val) => saveEntry({ highlight: val })}
-            className="w-full bg-cream-50/30 border border-paper-border/10 rounded-xl p-4 focus:outline-none focus:ring-1 focus:ring-paper-border/30 text-sm min-h-[100px] transition-all"
+            className="w-full bg-cream-50/30 border border-paper-border/10 rounded-xl p-4 focus:outline-none focus:ring-1 focus:ring-paper-border/30 text-sm font-serif italic min-h-[100px] transition-all"
           />
         </div>
         <div className="space-y-4">
@@ -374,7 +374,7 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
             type="textarea"
             value={entry?.learning || ''}
             onSave={(val) => saveEntry({ learning: val })}
-            className="w-full bg-cream-50/30 border border-paper-border/10 rounded-xl p-4 focus:outline-none focus:ring-1 focus:ring-paper-border/30 text-sm min-h-[100px] transition-all"
+            className="w-full bg-cream-50/30 border border-paper-border/10 rounded-xl p-4 focus:outline-none focus:ring-1 focus:ring-paper-border/30 text-sm font-serif italic min-h-[100px] transition-all"
           />
         </div>
         <div className="space-y-4">
@@ -383,7 +383,7 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
             type="textarea"
             value={entry?.remember || ''}
             onSave={(val) => saveEntry({ remember: val })}
-            className="w-full bg-cream-50/30 border border-paper-border/10 rounded-xl p-4 focus:outline-none focus:ring-1 focus:ring-paper-border/30 text-sm min-h-[100px] transition-all"
+            className="w-full bg-cream-50/30 border border-paper-border/10 rounded-xl p-4 focus:outline-none focus:ring-1 focus:ring-paper-border/30 text-sm font-serif italic min-h-[100px] transition-all"
           />
         </div>
       </footer>
