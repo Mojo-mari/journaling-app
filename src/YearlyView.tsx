@@ -17,19 +17,74 @@ const MONTHS = [
 
 const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  // 最初から5つ分の空の器を用意しておく
-  const [localGoals, setLocalGoals] = useState<YearlyGoal[]>(
+  const yearId = selectedDate.getFullYear().toString();
+  
+  // 空の5目標を生成するヘルパー関数
+  const createEmptyGoals = (): YearlyGoal[] => 
     Array.from({ length: 5 }).map(() => ({
       id: Math.random().toString(36).substring(2),
       text: '',
       completed: false,
       monthlyActions: {}
-    }))
-  );
+    }));
+
+  const [localGoals, setLocalGoals] = useState<YearlyGoal[]>(createEmptyGoals());
   const [loadedYearId, setLoadedYearId] = useState<string>('');
-  const yearId = selectedDate.getFullYear().toString();
   
   const entry = useLiveQuery(() => db.yearlyEntries.get(yearId), [yearId]);
+
+  // localGoalsの最新値を保持するRef
+  const localGoalsRef = useRef(localGoals);
+  useEffect(() => {
+    localGoalsRef.current = localGoals;
+  }, [localGoals]);
+
+  // 年度が変わった時、ローカル状態を即座にリセット
+  useEffect(() => {
+    if (yearId !== loadedYearId) {
+      // 年度が変わったら、即座に空の状態にリセット（DBからのデータ待ち）
+      setLocalGoals(createEmptyGoals());
+    }
+  }, [yearId, loadedYearId]);
+
+  // DBのデータが変わった時にローカル状態を同期
+  useEffect(() => {
+    if (entry === undefined) return; // ローディング中は何もしない
+    
+    if (entry === null) {
+      // DBにデータがない場合、新規作成
+      const initialGoals = createEmptyGoals();
+      db.yearlyEntries.put({
+        id: yearId,
+        theme: '',
+        goals: initialGoals,
+        reflection: '',
+        updatedAt: Date.now()
+      });
+      setLocalGoals(initialGoals);
+      setLoadedYearId(yearId);
+    } else if (entry.goals) {
+      // DBにデータがある場合
+      if (yearId !== loadedYearId) {
+        // 年度が変わった場合、DBのデータで上書き
+        const goals = entry.goals.length >= 5 
+          ? JSON.parse(JSON.stringify(entry.goals))
+          : [...entry.goals, ...createEmptyGoals()].slice(0, 5);
+        setLocalGoals(goals);
+        setLoadedYearId(yearId);
+      } else {
+        // 同じ年度内でDBが更新された場合（他のデバイスからの更新など）
+        // 編集中はスキップ
+        if (!document.activeElement?.closest('textarea')) {
+          const dbGoalsJson = JSON.stringify(entry.goals);
+          const localGoalsJson = JSON.stringify(localGoalsRef.current);
+          if (dbGoalsJson !== localGoalsJson) {
+            setLocalGoals(JSON.parse(dbGoalsJson));
+          }
+        }
+      }
+    }
+  }, [entry, yearId, loadedYearId]);
 
   // entryがロードされるまではローディング表示
   if (entry === undefined) {
@@ -40,64 +95,8 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
     );
   }
 
-  // localGoalsの最新値を保持するRef
-  const localGoalsRef = useRef(localGoals);
-  useEffect(() => {
-    localGoalsRef.current = localGoals;
-  }, [localGoals]);
-
-  // DBのデータが変わった時、または年が変わった時にローカル状態を同期
-  useEffect(() => {
-    if (entry && entry.goals && entry.goals.length >= 5) {
-      if (yearId !== loadedYearId) {
-        setLocalGoals(JSON.parse(JSON.stringify(entry.goals)));
-        setLoadedYearId(yearId);
-      } else {
-        // 編集中（フォーカスがある時）は外部からの同期をスキップして、入力の邪魔をしない
-        if (!document.activeElement?.closest('textarea')) {
-           const dbGoalsJson = JSON.stringify(entry.goals);
-           const localGoalsJson = JSON.stringify(localGoalsRef.current);
-           if (dbGoalsJson !== localGoalsJson) {
-              setLocalGoals(JSON.parse(dbGoalsJson));
-           }
-        }
-      }
-    }
-  }, [entry, yearId, loadedYearId]); // localGoals を依存配列から外す
-
-  // 目標が5つ未満の場合、自動的に補完する
-  useEffect(() => {
-    if (entry && entry.goals && entry.goals.length < 5) {
-      const currentGoals = [...entry.goals];
-      while (currentGoals.length < 5) {
-        currentGoals.push({
-          id: Math.random().toString(36).substring(2),
-          text: '',
-          completed: false,
-          monthlyActions: {}
-        });
-      }
-      db.yearlyEntries.update(yearId, { goals: currentGoals });
-    } else if (entry === undefined) {
-      // ローディング中
-    } else if (entry === null) {
-       const initialGoals = Array.from({ length: 5 }).map(() => ({
-         id: Math.random().toString(36).substring(2),
-         text: '',
-         completed: false,
-         monthlyActions: {}
-       }));
-       db.yearlyEntries.put({
-         id: yearId,
-         theme: '',
-         goals: initialGoals,
-         reflection: '',
-         updatedAt: Date.now()
-       });
-    }
-  }, [entry, yearId]);
-
   const saveEntry = async (updates: Partial<YearlyEntry>) => {
+    // ローディング中、または年度がまだ同期されていない場合は保存しない
     if (entry === undefined || yearId !== loadedYearId) return;
 
     const currentEntry = entry || {
@@ -107,7 +106,8 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
       reflection: '',
       updatedAt: Date.now(),
     };
-    await db.yearlyEntries.put({ ...currentEntry, ...updates, updatedAt: Date.now() });
+    // 必ず現在の yearId を使用して保存
+    await db.yearlyEntries.put({ ...currentEntry, ...updates, id: yearId, updatedAt: Date.now() });
   };
 
   const handleDateSelect = (date: Date) => {
@@ -128,13 +128,6 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
 
   // DB保存用の関数（Blur時に呼ばれる）
   const handleGoalTextSave = async (index: number, text: string) => {
-    // ロード中の年と異なる場合は保存しない（年度切り替え時の誤保存防止）
-    if (yearId !== loadedYearId) return;
-
-    // DBの値と比較して変更がなければ保存しない
-    const dbGoal = entry?.goals?.[index];
-    if (dbGoal && dbGoal.text === text) return;
-
     const goals = [...localGoals];
     if (goals[index]) {
       goals[index].text = text;
