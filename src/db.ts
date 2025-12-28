@@ -14,6 +14,12 @@ export interface WeeklyEntry {
   mostImportantTasks: WeeklyTask[];
   secondaryTasks: WeeklyTask[];
   additionalTasks: WeeklyTask[];
+  yearlyGoalActions?: { 
+    [goalIndex: number]: {
+      text: string;
+      completed: boolean;
+    } 
+  }; // 年間目標に基づいた今週のアクション
   updatedAt: number;
 }
 
@@ -67,10 +73,23 @@ export interface MonthlyEntry {
   updatedAt: number;
 }
 
+export interface YearlyGoal {
+  id: string;
+  text: string;
+  completed: boolean;
+  monthlyActions: { 
+    [key: number]: {
+      text: string;
+      completed: boolean;
+    } 
+  }; // 1-12
+  reflection?: string; // 各目標の振り返り
+}
+
 export interface YearlyEntry {
   id: string; // YYYY
   theme: string;
-  goals: { id: string; text: string; completed: boolean }[];
+  goals: YearlyGoal[];
   reflection: string;
   updatedAt: number;
 }
@@ -84,7 +103,7 @@ export class JournalDatabase extends Dexie {
 
   constructor() {
     super('JournalDatabase');
-    this.version(5).stores({
+    this.version(6).stores({
       weeklyEntries: 'id, startDate, updatedAt',
       dailyEntries: 'id, date, updatedAt',
       monthlyEntries: 'id, updatedAt',

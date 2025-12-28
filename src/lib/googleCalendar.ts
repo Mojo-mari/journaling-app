@@ -2,7 +2,7 @@ import { gapi } from 'gapi-script';
 
 const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
 
-export const initGapi = () => {
+export const initGapi = (clientId?: string) => {
   return new Promise((resolve, reject) => {
     // すでに初期化されている場合はスキップ
     if (gapi.client && gapi.client.calendar) {
@@ -14,6 +14,7 @@ export const initGapi = () => {
       callback: async () => {
         try {
           await gapi.client.init({
+            clientId: clientId,
             discoveryDocs: DISCOVERY_DOCS,
             // scope はここでは指定せず、ログイン時の token に依存させる
           });

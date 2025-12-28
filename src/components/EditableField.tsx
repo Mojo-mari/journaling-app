@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 interface EditableFieldProps {
   value: string;
   onSave: (value: string) => void;
+  onChange?: (value: string) => void;
   placeholder?: string;
   className?: string;
   type?: 'input' | 'textarea';
@@ -11,6 +12,7 @@ interface EditableFieldProps {
 const EditableField: React.FC<EditableFieldProps> = ({ 
   value, 
   onSave, 
+  onChange,
   placeholder, 
   className, 
   type = 'input' 
@@ -27,11 +29,19 @@ const EditableField: React.FC<EditableFieldProps> = ({
     }
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const newVal = e.target.value;
+    setLocalValue(newVal);
+    if (onChange) {
+      onChange(newVal);
+    }
+  };
+
   if (type === 'textarea') {
     return (
       <textarea
         value={localValue}
-        onChange={(e) => setLocalValue(e.target.value)}
+        onChange={handleChange}
         onBlur={handleBlur}
         placeholder={placeholder}
         className={className}
@@ -43,7 +53,7 @@ const EditableField: React.FC<EditableFieldProps> = ({
     <input
       type="text"
       value={localValue}
-      onChange={(e) => setLocalValue(e.target.value)}
+      onChange={handleChange}
       onBlur={handleBlur}
       placeholder={placeholder}
       className={className}

@@ -46,9 +46,11 @@ const Timeline: React.FC<TimelineProps> = ({ events, onSave, selectedDate }) => 
   const [isSyncing, setIsSyncing] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID?.trim();
+
   useEffect(() => {
-    initGapi();
-  }, []);
+    initGapi(clientId);
+  }, [clientId]);
 
   // 編集開始時にテキストをセット
   useEffect(() => {
@@ -65,7 +67,7 @@ const Timeline: React.FC<TimelineProps> = ({ events, onSave, selectedDate }) => 
       setIsSyncing(true);
       try {
         // GAPIの初期化を確実に確認
-        await initGapi();
+        await initGapi(clientId);
         
         // gapiにトークンを設定
         if ((window as any).gapi && (window as any).gapi.client) {
@@ -89,17 +91,16 @@ const Timeline: React.FC<TimelineProps> = ({ events, onSave, selectedDate }) => 
         }
       } catch (error) {
         console.error('Sync error:', error);
-        alert("Googleカレンダーの同期中にエラーが発生しました。しばらく時間をおいてから再度お試しください。");
+        alert("Googleカレンダーの同期中にエラーが発生しました。Google Cloud Consoleでの「承認済みの JavaScript 生成元」の設定を確認してください。");
       } finally {
         setIsSyncing(false);
       }
     },
     onError: (error) => {
       console.error('Login Failed:', error);
-      alert("ログインに失敗しました。");
+      alert("ログインに失敗しました。クライアントIDが正しいか、またはブラウザのポップアップブロックを確認してください。");
     },
-    scope: 'https://www.googleapis.com/auth/calendar.events.readonly',
-    flow: 'implicit',
+    scope: 'openid email profile https://www.googleapis.com/auth/calendar.events.readonly',
   });
 
   const formatTime = (isoString: string) => {
@@ -260,12 +261,15 @@ const Timeline: React.FC<TimelineProps> = ({ events, onSave, selectedDate }) => 
           Timeline (Drag to create)
         </h2>
         <button 
-          onClick={() => login()}
+          onClick={() => clientId ? login() : alert("Google Client IDが設定されていません。.envファイルを確認してください。")}
           disabled={isSyncing}
-          className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-paper-text/40 hover:text-paper-text transition-colors"
+          className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider transition-colors ${
+            !clientId ? 'text-rose-400 opacity-60' : 'text-paper-text/40 hover:text-paper-text'
+          }`}
+          title={!clientId ? "Google Client IDが未設定です" : "Googleカレンダーと同期"}
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
-          {isSyncing ? 'Syncing...' : 'Sync with Google'}
+          {isSyncing ? 'Syncing...' : clientId ? 'Sync with Google' : 'Config Error'}
         </button>
       </div>
       

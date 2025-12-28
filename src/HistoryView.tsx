@@ -138,7 +138,7 @@ const HistoryView: React.FC<HistoryViewProps> = ({ onEntrySelect }) => {
   return (
     <div className="p-6 md:p-10 min-h-screen">
       <header className="mb-10 border-b border-paper-border pb-8">
-        <h1 className="text-4xl font-serif text-paper-text italic font-bold tracking-tight mb-6">Archive & Search</h1>
+        <h1 className="text-4xl font-serif text-paper-text font-bold tracking-tight mb-6">Archive & Search</h1>
         
         <div className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-grow">
@@ -197,7 +197,7 @@ const HistoryView: React.FC<HistoryViewProps> = ({ onEntrySelect }) => {
                     {getIcon(result.type)}
                   </div>
                   <div>
-                    <h3 className="font-serif italic font-bold text-paper-text/80 group-hover:text-paper-text transition-colors">
+                    <h3 className="font-serif font-bold text-paper-text/80 group-hover:text-paper-text transition-colors">
                       {result.title}
                     </h3>
                     <span className="text-[10px] uppercase tracking-[0.2em] text-paper-text/30 font-bold">
@@ -208,7 +208,7 @@ const HistoryView: React.FC<HistoryViewProps> = ({ onEntrySelect }) => {
                 <ChevronRight className="w-5 h-5 text-paper-text/20 group-hover:text-paper-text group-hover:translate-x-1 transition-all" />
               </div>
               
-              <p className="text-sm text-paper-text/60 leading-relaxed italic line-clamp-2 pl-11">
+              <p className="text-sm font-serif text-paper-text/60 leading-relaxed line-clamp-2 pl-11">
                 {result.content || '(本文なし)'}
               </p>
             </button>
@@ -218,7 +218,7 @@ const HistoryView: React.FC<HistoryViewProps> = ({ onEntrySelect }) => {
             <div className="w-16 h-16 bg-cream-50 rounded-full border border-dashed border-paper-border/40 flex items-center justify-center mx-auto mb-4">
               <Search className="w-6 h-6 text-paper-text/20" />
             </div>
-            <p className="text-paper-text/30 italic">該当する記録が見つかりませんでした。</p>
+            <p className="text-paper-text/30">該当する記録が見つかりませんでした。</p>
             {searchQuery && (
               <button 
                 onClick={() => setSearchQuery('')}

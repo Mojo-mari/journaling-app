@@ -34,7 +34,7 @@ const Layout: React.FC<LayoutProps> = ({
             <div className="w-10 h-10 md:w-12 md:h-12 bg-paper-text rounded-xl flex items-center justify-center text-cream-50 shadow-lg md:mb-2">
               <LayoutIcon className="w-6 h-6 md:w-7 md:h-7" />
             </div>
-            <h1 className="ml-3 md:ml-0 lg:block font-serif text-xl font-bold italic tracking-tight hidden md:hidden lg:block">Journal</h1>
+            <h1 className="ml-3 md:ml-0 lg:block font-serif text-xl font-bold tracking-tight hidden md:hidden lg:block">Journal</h1>
           </div>
           
           {/* Mobile Calendar Toggle */}
@@ -48,27 +48,15 @@ const Layout: React.FC<LayoutProps> = ({
 
         <div className="flex flex-row md:flex-col flex-grow space-x-1 md:space-x-0 md:space-y-2 w-full overflow-x-auto no-scrollbar">
           <button
-            onClick={() => onViewChange('daily')}
+            onClick={() => onViewChange('yearly')}
             className={`flex-grow md:flex-grow-0 flex flex-col lg:flex-row items-center justify-center lg:justify-start px-2 py-3 md:px-4 rounded-xl transition-all duration-200 group ${
-              currentView === 'daily' 
+              currentView === 'yearly' 
                 ? 'bg-cream-200 text-paper-text shadow-sm' 
                 : 'hover:bg-cream-100 text-paper-text/60 hover:text-paper-text'
             }`}
           >
-            <CalendarIcon className={`w-5 h-5 md:w-6 md:h-6 lg:mr-3 ${currentView === 'daily' ? 'scale-110' : 'group-hover:scale-110'} transition-transform`} />
-            <span className="text-[9px] lg:text-sm font-medium tracking-wide mt-1 lg:mt-0">Daily</span>
-          </button>
-
-          <button
-            onClick={() => onViewChange('weekly')}
-            className={`flex-grow md:flex-grow-0 flex flex-col lg:flex-row items-center justify-center lg:justify-start px-2 py-3 md:px-4 rounded-xl transition-all duration-200 group ${
-              currentView === 'weekly' 
-                ? 'bg-cream-200 text-paper-text shadow-sm' 
-                : 'hover:bg-cream-100 text-paper-text/60 hover:text-paper-text'
-            }`}
-          >
-            <LayoutIcon className={`w-5 h-5 md:w-6 md:h-6 lg:mr-3 ${currentView === 'weekly' ? 'scale-110' : 'group-hover:scale-110'} transition-transform`} />
-            <span className="text-[9px] lg:text-sm font-medium tracking-wide mt-1 lg:mt-0">Weekly</span>
+            <Layers className={`w-5 h-5 md:w-6 md:h-6 lg:mr-3 ${currentView === 'yearly' ? 'scale-110' : 'group-hover:scale-110'} transition-transform`} />
+            <span className="text-[9px] lg:text-sm font-medium tracking-wide mt-1 lg:mt-0">Yearly</span>
           </button>
 
           <button
@@ -84,15 +72,27 @@ const Layout: React.FC<LayoutProps> = ({
           </button>
 
           <button
-            onClick={() => onViewChange('yearly')}
+            onClick={() => onViewChange('weekly')}
             className={`flex-grow md:flex-grow-0 flex flex-col lg:flex-row items-center justify-center lg:justify-start px-2 py-3 md:px-4 rounded-xl transition-all duration-200 group ${
-              currentView === 'yearly' 
+              currentView === 'weekly' 
                 ? 'bg-cream-200 text-paper-text shadow-sm' 
                 : 'hover:bg-cream-100 text-paper-text/60 hover:text-paper-text'
             }`}
           >
-            <Layers className={`w-5 h-5 md:w-6 md:h-6 lg:mr-3 ${currentView === 'yearly' ? 'scale-110' : 'group-hover:scale-110'} transition-transform`} />
-            <span className="text-[9px] lg:text-sm font-medium tracking-wide mt-1 lg:mt-0">Yearly</span>
+            <LayoutIcon className={`w-5 h-5 md:w-6 md:h-6 lg:mr-3 ${currentView === 'weekly' ? 'scale-110' : 'group-hover:scale-110'} transition-transform`} />
+            <span className="text-[9px] lg:text-sm font-medium tracking-wide mt-1 lg:mt-0">Weekly</span>
+          </button>
+
+          <button
+            onClick={() => onViewChange('daily')}
+            className={`flex-grow md:flex-grow-0 flex flex-col lg:flex-row items-center justify-center lg:justify-start px-2 py-3 md:px-4 rounded-xl transition-all duration-200 group ${
+              currentView === 'daily' 
+                ? 'bg-cream-200 text-paper-text shadow-sm' 
+                : 'hover:bg-cream-100 text-paper-text/60 hover:text-paper-text'
+            }`}
+          >
+            <CalendarIcon className={`w-5 h-5 md:w-6 md:h-6 lg:mr-3 ${currentView === 'daily' ? 'scale-110' : 'group-hover:scale-110'} transition-transform`} />
+            <span className="text-[9px] lg:text-sm font-medium tracking-wide mt-1 lg:mt-0">Daily</span>
           </button>
 
           <button

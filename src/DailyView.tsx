@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, type DailyEntry, type TimelineEvent, type DailyTask } from './db';
-import { Calendar as CalendarIcon, Sun, Heart, CheckCircle2, Circle, Star, ListChecks, CheckSquare, Square, Plus, X } from 'lucide-react';
+import { Calendar as CalendarIcon, Sun, Heart, CheckCircle2, Circle, Star, ListChecks, CheckSquare, Square, Plus, X, Target } from 'lucide-react';
 import EditableField from './components/EditableField';
 import Timeline from './components/Timeline';
 import Calendar from './components/Calendar';
@@ -13,6 +13,8 @@ interface DailyViewProps {
 
 const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [newHabitName, setNewHabitName] = useState('');
+  
   const dateId = selectedDate.toISOString().split('T')[0];
   const dateString = selectedDate.toLocaleDateString('ja-JP', { 
     year: 'numeric', 
@@ -35,15 +37,16 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
   const weeklyEntry = useLiveQuery(() => db.weeklyEntries.get(weekId), [weekId]);
   const habits = useLiveQuery(() => db.habits.toArray());
 
-  // 習慣データの読み込み完了を待つ（entryは存在しない場合もあるのでhabitsで判定）
+  // 1. Check if habits or entries are still loading
   if (habits === undefined) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-cream-100">
-        <div className="text-paper-text/40 animate-pulse font-serif italic text-lg">Loading Journal...</div>
+        <div className="text-paper-text/40 animate-pulse text-lg">Loading Journal...</div>
       </div>
     );
   }
 
+  // 2. All functions
   const saveEntry = async (updates: Partial<DailyEntry>) => {
     const currentEntry = entry || {
       id: dateId,
@@ -72,13 +75,19 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
   };
 
   const addHabit = async () => {
-    const name = prompt('新しい習慣の名前を入力してください:');
-    if (name) {
+    if (newHabitName.trim()) {
       await db.habits.add({
         id: Math.random().toString(36).substring(2),
-        name,
+        name: newHabitName.trim(),
         createdAt: Date.now()
       });
+      setNewHabitName('');
+    }
+  };
+
+  const deleteHabit = async (habitId: string) => {
+    if (confirm('この習慣を削除してもよろしいですか？')) {
+      await db.habits.delete(habitId);
     }
   };
 
@@ -94,31 +103,14 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
     saveEntry({ gratitude });
   };
 
-  const updateTask = (type: 'mostImportantTask' | 'secondaryTasks' | 'additionalTasks', id: string, updates: Partial<DailyTask>) => {
-    if (type === 'mostImportantTask') {
-      saveEntry({ mostImportantTask: { ...(entry?.mostImportantTask || {}), ...updates } as DailyTask });
-    } else {
-      const tasks = (entry?.[type] || []).map(t => t.id === id ? { ...t, ...updates } : t);
-      saveEntry({ [type]: tasks });
-    }
+  const updateTask = (type: 'secondaryTasks' | 'additionalTasks', id: string, updates: Partial<DailyTask>) => {
+    const tasks = (entry?.[type] || []).map(t => t.id === id ? { ...t, ...updates } : t);
+    saveEntry({ [type]: tasks });
   };
 
-  const toggleTask = (type: 'mostImportantTask' | 'secondaryTasks' | 'additionalTasks', id: string) => {
-    if (type === 'mostImportantTask') {
-      const task = entry?.mostImportantTask;
-      if (task) {
-        saveEntry({ mostImportantTask: { ...task, completed: !task.completed } });
-      }
-    } else {
-      const tasks = (entry?.[type] || []).map(t => t.id === id ? { ...t, completed: !t.completed } : t);
-      saveEntry({ [type]: tasks });
-    }
-  };
-
-  const updateSessions = (count: number) => {
-    if (entry?.mostImportantTask) {
-      saveEntry({ mostImportantTask: { ...entry.mostImportantTask, sessions: count } });
-    }
+  const toggleTask = (type: 'secondaryTasks' | 'additionalTasks', id: string) => {
+    const tasks = (entry?.[type] || []).map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+    saveEntry({ [type]: tasks });
   };
 
   const handleTimelineSave = (newTimeline: TimelineEvent[]) => {
@@ -134,10 +126,10 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
     <div className="p-6 md:p-10 min-h-screen">
       <header className="mb-10 flex flex-col md:flex-row md:justify-between md:items-end border-b border-paper-border pb-6 gap-4">
         <div>
-          <h1 className="text-4xl font-serif text-paper-text italic font-bold tracking-tight">Daily Planning</h1>
+          <h1 className="text-4xl font-serif text-paper-text font-bold tracking-tight">Daily Planning</h1>
           <button 
             onClick={() => setIsCalendarOpen(true)}
-            className="text-paper-text opacity-60 flex items-center mt-2 font-medium hover:opacity-100 hover:bg-cream-200 px-2 py-1 rounded-lg transition-all -ml-2"
+            className="text-paper-text opacity-60 flex items-center mt-2 font-medium hover:opacity-100 hover:bg-cream-200 px-2 py-1 rounded-lg transition-all -ml-2 font-serif text-2xl"
           >
             <CalendarIcon className="w-4 h-4 mr-2" />
             {dateString}
@@ -190,28 +182,6 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         <div className="space-y-10">
-          {/* Gratitude Section */}
-          <section className="bg-cream-50 p-6 rounded-2xl border border-paper-border shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-1.5 h-full bg-rose-200" />
-            <h2 className="text-[11px] uppercase tracking-[0.2em] text-paper-text/50 mb-4 font-bold flex items-center">
-              <Heart className="w-4 h-4 mr-2 text-rose-400 fill-rose-400/20" />
-              Gratitude
-            </h2>
-            <div className="space-y-4">
-              {[0, 1, 2].map((i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <span className="text-paper-text/30 font-serif italic text-sm">{i + 1}.</span>
-                  <EditableField
-                    value={entry?.gratitude?.[i] || ''}
-                    onSave={(val) => updateGratitude(i, val)}
-                    placeholder="感謝していることを書きましょう..."
-                    className="flex-grow bg-transparent border-b border-paper-border/20 focus:border-paper-border focus:outline-none py-1 text-sm transition-all"
-                  />
-                </div>
-              ))}
-            </div>
-          </section>
-
           {/* Intention Section */}
           <section className="bg-cream-50 p-6 rounded-2xl border border-paper-border shadow-sm relative overflow-hidden">
             <div className="absolute top-0 left-0 w-1.5 h-full bg-amber-200" />
@@ -224,25 +194,72 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
               value={entry?.intention || ''}
               onSave={(val) => saveEntry({ intention: val })}
               placeholder="今日一日の意図や目標を入力..."
-              className="w-full bg-cream-100/30 border border-paper-border/20 rounded-xl p-4 focus:outline-none focus:ring-1 focus:ring-paper-border/50 min-h-[100px] text-sm shadow-inner transition-all placeholder:italic"
+              className="w-full bg-cream-100/30 border border-paper-border/20 rounded-xl p-4 focus:outline-none focus:ring-1 focus:ring-paper-border/50 min-h-[100px] text-sm font-serif shadow-inner transition-all"
             />
+          </section>
+
+          {/* Gratitude Section */}
+          <section className="bg-cream-50 p-6 rounded-2xl border border-paper-border shadow-sm relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-1.5 h-full bg-rose-200" />
+            <h2 className="text-[11px] uppercase tracking-[0.2em] text-paper-text/50 mb-4 font-bold flex items-center">
+              <Heart className="w-4 h-4 mr-2 text-rose-400 fill-rose-400/20" />
+              Gratitude
+            </h2>
+            <div className="space-y-4">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <span className="text-paper-text/30 text-sm">{i + 1}.</span>
+                  <EditableField
+                    value={entry?.gratitude?.[i] || ''}
+                    onSave={(val) => updateGratitude(i, val)}
+                    placeholder="感謝していることを書きましょう..."
+                    className="flex-grow bg-transparent font-serif border-b border-paper-border/20 focus:border-paper-border focus:outline-none py-1 text-sm transition-all"
+                  />
+                </div>
+              ))}
+            </div>
           </section>
 
           {/* Weekly Goals Summary */}
           {weeklyEntry && (
-            <section className="bg-cream-200/20 p-6 rounded-2xl border border-dashed border-paper-border/40">
-              <h2 className="text-[10px] uppercase tracking-[0.2em] text-paper-text/40 mb-4 font-bold flex items-center">
-                <ListChecks className="w-3.5 h-3.5 mr-2" />
-                Weekly Focus
-              </h2>
-              <div className="space-y-2">
-                {weeklyEntry.mostImportantTasks.slice(0, 3).map((task) => (
-                  <div key={task.id} className="flex items-center gap-2 text-xs text-paper-text/60 italic">
-                    <div className={`w-1.5 h-1.5 rounded-full ${task.completed ? 'bg-paper-text/20' : 'bg-paper-text/40'}`} />
-                    <span className={task.completed ? 'line-through opacity-50' : ''}>{task.text || '(未入力)'}</span>
-                  </div>
-                ))}
+            <section className="bg-cream-200/20 p-6 rounded-2xl border border-dashed border-paper-border/40 space-y-6">
+              <div>
+                <h2 className="text-[10px] uppercase tracking-[0.2em] text-paper-text/40 mb-3 font-bold flex items-center">
+                  <ListChecks className="w-3.5 h-3.5 mr-2" />
+                  Weekly Priorities
+                </h2>
+                <div className="space-y-2">
+                  {weeklyEntry.mostImportantTasks.slice(0, 3).map((task) => (
+                    <div key={task.id} className="flex items-center gap-2 text-xs font-serif text-paper-text/60">
+                      <div className={`w-1.5 h-1.5 rounded-full ${task.completed ? 'bg-paper-text/20' : 'bg-paper-text/40'}`} />
+                      <span className={task.completed ? 'line-through opacity-50' : ''}>{task.text || '(未入力)'}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
+
+              {weeklyEntry.yearlyGoalActions && Object.keys(weeklyEntry.yearlyGoalActions).length > 0 && (
+                <div>
+                  <h2 className="text-[10px] uppercase tracking-[0.2em] text-paper-text/40 mb-3 font-bold flex items-center border-t border-paper-border/10 pt-4">
+                    <Target className="w-3.5 h-3.5 mr-2" />
+                    Weekly Actions for Goals
+                  </h2>
+                  <div className="space-y-2">
+                    {Object.entries(weeklyEntry.yearlyGoalActions).slice(0, 5).map(([index, action]: [string, any]) => {
+                      const actionText = typeof action === 'object' ? action.text : action;
+                      const isCompleted = typeof action === 'object' ? action.completed : false;
+                      if (!actionText) return null;
+                      
+                      return (
+                        <div key={index} className="flex items-start gap-2 text-xs font-serif text-paper-text/60">
+                          <div className={`w-1.5 h-1.5 mt-1.5 rounded-full ${isCompleted ? 'bg-paper-text/20' : 'bg-paper-text/40'}`} />
+                          <span className={isCompleted ? 'line-through opacity-50' : ''}>{actionText}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </section>
           )}
 
@@ -256,92 +273,50 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
                   <CheckSquare className="w-4 h-4 mr-2 text-teal-500" />
                   Habit Tracker
                 </h2>
-                <button onClick={addHabit} className="text-paper-text/30 hover:text-paper-text transition-colors">
-                  <Plus className="w-4 h-4" />
-                </button>
               </div>
-              <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+              <div className="grid grid-cols-2 gap-x-6 gap-y-3 mb-6">
                 {(habits || []).map((habit) => (
-                  <button
-                    key={habit.id}
-                    onClick={() => toggleHabit(habit.id)}
-                    className="flex items-center gap-3 group text-left"
-                  >
-                    {entry?.habitCompletion?.[habit.id] ? 
-                      <CheckSquare className="w-4 h-4 text-teal-600 fill-teal-50" /> : 
-                      <Square className="w-4 h-4 text-paper-text/20 group-hover:text-paper-text/40" />
-                    }
-                    <span className={`text-sm ${entry?.habitCompletion?.[habit.id] ? 'text-paper-text/80 font-medium' : 'text-paper-text/40'}`}>
-                      {habit.name}
-                    </span>
-                  </button>
+                  <div key={habit.id} className="flex items-center justify-between group">
+                    <button
+                      onClick={() => toggleHabit(habit.id)}
+                      className="flex items-center gap-3 text-left flex-grow"
+                    >
+                      {entry?.habitCompletion?.[habit.id] ? 
+                        <CheckSquare className="w-4 h-4 text-teal-600 fill-teal-50" /> : 
+                        <Square className="w-4 h-4 text-paper-text/20 group-hover:text-paper-text/40" />
+                      }
+                      <span className={`text-sm ${entry?.habitCompletion?.[habit.id] ? 'text-paper-text/80 font-medium' : 'text-paper-text/40'}`}>
+                        {habit.name}
+                      </span>
+                    </button>
+                    <button 
+                      onClick={() => deleteHabit(habit.id)}
+                      className="opacity-0 group-hover:opacity-40 hover:!opacity-100 transition-all p-1"
+                    >
+                      <Trash2 className="w-3 h-3 text-rose-500" />
+                    </button>
+                  </div>
                 ))}
                 {(!habits || habits.length === 0) && (
-                  <p className="col-span-2 text-[10px] italic text-paper-text/20 py-2">習慣を追加して記録を始めましょう</p>
+                  <p className="col-span-2 text-[10px] text-paper-text/20 py-2">習慣を追加して記録を始めましょう</p>
                 )}
               </div>
-            </div>
-
-            <div>
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-[11px] uppercase tracking-[0.2em] text-paper-text/50 font-bold">The One Most Important Task</h2>
-                <div className="flex gap-4 text-[10px] uppercase tracking-widest font-bold text-paper-text/30">
-                  <div className="flex items-center gap-1.5">
-                    <span>Target:</span>
-                    <EditableField
-                      value={entry?.mostImportantTask?.targetTime || ''}
-                      onSave={(val) => updateTask('mostImportantTask', entry?.mostImportantTask?.id || '', { targetTime: val })}
-                      placeholder="0.0"
-                      className="w-8 bg-transparent border-b border-paper-border/20 focus:outline-none text-center"
-                    />
-                    <span>h</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-paper-text/50">
-                    <span>Actual:</span>
-                    <EditableField
-                      value={entry?.mostImportantTask?.actualTime || ''}
-                      onSave={(val) => updateTask('mostImportantTask', entry?.mostImportantTask?.id || '', { actualTime: val })}
-                      placeholder="0.0"
-                      className="w-8 bg-transparent border-b border-paper-border/20 focus:outline-none text-center"
-                    />
-                    <span>h</span>
-                  </div>
-                </div>
-              </div>
               
-              <div className="bg-cream-200/40 p-5 rounded-2xl border border-paper-border/30 shadow-sm mb-4">
-                <div className="flex items-center">
-                  <button onClick={() => toggleTask('mostImportantTask', entry?.mostImportantTask?.id || '')} className="mr-4">
-                    {entry?.mostImportantTask?.completed ? 
-                      <CheckCircle2 className="w-7 h-7 text-paper-text" /> : 
-                      <Circle className="w-7 h-7 text-paper-text/20 hover:text-paper-text/40" />
-                    }
-                  </button>
-                  <EditableField
-                    value={entry?.mostImportantTask?.text || ''}
-                    onSave={(val) => updateTask('mostImportantTask', entry?.mostImportantTask?.id || '', { text: val })}
-                    placeholder="最優先事項を入力..."
-                    className={`flex-grow bg-transparent focus:outline-none font-serif italic text-lg ${entry?.mostImportantTask?.completed ? 'line-through opacity-40' : ''}`}
-                  />
-                </div>
-                
-                {/* Progress Dots (30 min sessions) */}
-                <div className="mt-4 pt-4 border-t border-paper-border/10 flex items-center justify-between">
-                  <span className="text-[9px] uppercase tracking-widest font-bold text-paper-text/30">Progress (30m sessions)</span>
-                  <div className="flex gap-1.5">
-                    {Array.from({ length: 10 }).map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => updateSessions(i + 1 === entry?.mostImportantTask?.sessions ? i : i + 1)}
-                        className={`w-3 h-3 rounded-full border transition-all ${
-                          i < (entry?.mostImportantTask?.sessions || 0) 
-                            ? 'bg-paper-text border-paper-text shadow-sm' 
-                            : 'border-paper-border/40 bg-transparent hover:border-paper-text/40'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </div>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newHabitName}
+                  onChange={(e) => setNewHabitName(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && addHabit()}
+                  placeholder="新しい習慣を入力..."
+                  className="flex-grow bg-cream-100/50 border border-paper-border/20 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-teal-500/30 transition-all"
+                />
+                <button 
+                  onClick={addHabit}
+                  className="bg-paper-text text-cream-50 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all"
+                >
+                  追加
+                </button>
               </div>
             </div>
 
@@ -363,7 +338,7 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
                       value={task.text || ''}
                       onSave={(val) => updateTask('secondaryTasks', task.id, { text: val })}
                       placeholder="重要タスクを入力..."
-                      className={`flex-grow bg-transparent border-b border-paper-border/10 focus:border-paper-border focus:outline-none py-1 text-sm ${task.completed ? 'line-through opacity-40' : ''}`}
+                      className={`flex-grow bg-transparent font-serif border-b border-paper-border/10 focus:border-paper-border focus:outline-none py-1 text-sm ${task.completed ? 'line-through opacity-40' : ''}`}
                     />
                   </div>
                 ))}
@@ -390,7 +365,7 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
             type="textarea"
             value={entry?.highlight || ''}
             onSave={(val) => saveEntry({ highlight: val })}
-            className="w-full bg-cream-50/30 border border-paper-border/10 rounded-xl p-4 focus:outline-none focus:ring-1 focus:ring-paper-border/30 text-sm min-h-[100px] italic transition-all"
+            className="w-full bg-cream-50/30 border border-paper-border/10 rounded-xl p-4 focus:outline-none focus:ring-1 focus:ring-paper-border/30 text-sm min-h-[100px] transition-all"
           />
         </div>
         <div className="space-y-4">
@@ -399,7 +374,7 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
             type="textarea"
             value={entry?.learning || ''}
             onSave={(val) => saveEntry({ learning: val })}
-            className="w-full bg-cream-50/30 border border-paper-border/10 rounded-xl p-4 focus:outline-none focus:ring-1 focus:ring-paper-border/30 text-sm min-h-[100px] italic transition-all"
+            className="w-full bg-cream-50/30 border border-paper-border/10 rounded-xl p-4 focus:outline-none focus:ring-1 focus:ring-paper-border/30 text-sm min-h-[100px] transition-all"
           />
         </div>
         <div className="space-y-4">
@@ -408,7 +383,7 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
             type="textarea"
             value={entry?.remember || ''}
             onSave={(val) => saveEntry({ remember: val })}
-            className="w-full bg-cream-50/30 border border-paper-border/10 rounded-xl p-4 focus:outline-none focus:ring-1 focus:ring-paper-border/30 text-sm min-h-[100px] italic transition-all"
+            className="w-full bg-cream-50/30 border border-paper-border/10 rounded-xl p-4 focus:outline-none focus:ring-1 focus:ring-paper-border/30 text-sm min-h-[100px] transition-all"
           />
         </div>
       </footer>

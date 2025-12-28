@@ -55,7 +55,7 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect, highlig
     return (
       <div className="bg-cream-50 p-8 rounded-[2rem] border border-paper-border shadow-xl">
         <header className="flex justify-between items-center mb-8 border-b border-paper-border/10 pb-4">
-          <span className="font-serif italic font-bold text-paper-text/40 text-xs tracking-widest uppercase">
+          <span className="font-bold text-paper-text/40 text-xs tracking-widest uppercase">
             Select Year
           </span>
           <div className="flex gap-3">
@@ -98,7 +98,6 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect, highlig
               >
                 <span className={`
                   ${isCenter ? 'text-lg' : 'text-sm'} 
-                  ${isSelected ? 'font-bold' : 'font-serif'}
                   transition-all
                 `}>
                   {y}
@@ -120,7 +119,7 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect, highlig
         <header className="flex justify-between items-center mb-8 border-b border-paper-border/10 pb-4">
           <button 
             onClick={() => setViewMode('years')}
-            className="font-serif italic font-bold text-paper-text/80 hover:bg-cream-200 px-3 py-1 rounded-xl transition-all text-xl"
+            className="font-bold text-paper-text/80 hover:bg-cream-200 px-3 py-1 rounded-xl transition-all text-xl"
           >
             {format(currentMonth, 'yyyy年')}
           </button>
@@ -165,7 +164,7 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect, highlig
       <header className="flex justify-between items-center mb-6">
         <button 
           onClick={() => setViewMode('months')}
-          className="font-serif italic font-bold text-paper-text/80 hover:bg-cream-200 px-3 py-1 rounded-xl transition-all"
+          className="font-bold text-paper-text/80 hover:bg-cream-200 px-3 py-1 rounded-xl transition-all"
         >
           {format(currentMonth, dateFormat, { locale: ja })}
         </button>
