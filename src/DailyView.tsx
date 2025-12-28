@@ -192,40 +192,40 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
-        <div className="space-y-8 md:space-y-12">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+        <div className="space-y-6 md:space-y-8">
           {/* Intention Section */}
-          <section className="paper-card p-6 md:p-8 relative overflow-hidden group">
+          <section className="paper-card p-5 md:p-6 relative overflow-hidden group">
             <div className="absolute top-0 left-0 w-1 h-full bg-amber-200/80 transition-all duration-500 group-hover:w-1.5" />
-            <h2 className="text-[10px] md:text-xs font-bold text-paper-text/60 mb-6 flex items-center tracking-widest">
-              <Sun className="w-4 h-4 mr-2 text-amber-500" />
+            <h2 className="text-[10px] font-bold text-paper-text/60 mb-4 flex items-center tracking-widest">
+              <Sun className="w-3.5 h-3.5 mr-2 text-amber-500" />
               今日のテーマ・意図
             </h2>
             <EditableField
               type="textarea"
               value={entry?.intention || ''}
               onSave={(val) => saveEntry({ intention: val })}
-              placeholder="今日一日の意図や目標を入力..."
-              className="w-full bg-white/40 border-none rounded-xl p-5 focus:ring-0 text-base font-serif italic shadow-inner transition-all placeholder:text-paper-text/20 min-h-[120px] resize-none leading-relaxed"
+              placeholder="今日の意図..."
+              className="w-full bg-white/40 border-none rounded-xl p-3 focus:ring-0 text-sm font-serif italic shadow-inner transition-all placeholder:text-paper-text/20 min-h-[80px] resize-none leading-relaxed"
             />
           </section>
 
           {/* Gratitude Section */}
-          <section className="paper-card p-6 md:p-8 relative overflow-hidden group">
+          <section className="paper-card p-5 md:p-6 relative overflow-hidden group">
             <div className="absolute top-0 left-0 w-1 h-full bg-rose-200/80 transition-all duration-500 group-hover:w-1.5" />
-            <h2 className="text-[10px] md:text-xs font-bold text-paper-text/60 mb-6 flex items-center tracking-widest">
-              <Heart className="w-4 h-4 mr-2 text-rose-400 fill-rose-400/20" />
+            <h2 className="text-[10px] font-bold text-paper-text/60 mb-4 flex items-center tracking-widest">
+              <Heart className="w-3.5 h-3.5 mr-2 text-rose-400 fill-rose-400/20" />
               感謝 (Gratitude)
             </h2>
-            <div className="space-y-5">
+            <div className="space-y-3">
               {[0, 1, 2].map((i) => (
-                <div key={i} className="flex items-center gap-4 group/item">
-                  <span className="text-paper-text/20 font-serif italic text-sm w-4 text-right transition-colors group-hover/item:text-paper-text/40">{i + 1}.</span>
+                <div key={i} className="flex items-center gap-3 group/item">
+                  <span className="text-paper-text/20 font-serif italic text-xs w-3 text-right transition-colors group-hover/item:text-paper-text/40">{i + 1}.</span>
                   <EditableField
                     value={entry?.gratitude?.[i] || ''}
                     onSave={(val) => updateGratitude(i, val)}
-                    placeholder="感謝していることを書きましょう..."
-                    className="paper-input flex-grow text-base font-serif italic"
+                    placeholder="感謝..."
+                    className="paper-input flex-grow text-sm font-serif italic"
                   />
                 </div>
               ))}
@@ -234,16 +234,16 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
 
           {/* Weekly Goals Summary */}
           {weeklyEntry && (
-            <section className="bg-cream-200/30 p-6 md:p-8 rounded-2xl border border-dashed border-paper-border-dark/30 space-y-8 backdrop-blur-sm">
+            <section className="bg-cream-200/30 p-5 md:p-6 rounded-xl border border-dashed border-paper-border-dark/30 space-y-6 backdrop-blur-sm">
               <div>
-                <h2 className="text-[10px] md:text-xs font-bold text-paper-text/60 mb-4 flex items-center tracking-widest">
+                <h2 className="text-[10px] font-bold text-paper-text/60 mb-3 flex items-center tracking-widest">
                   <ListChecks className="w-3.5 h-3.5 mr-2" />
                   今週の最優先事項
                 </h2>
-                <div className="space-y-3 pl-2">
+                <div className="space-y-2 pl-2">
                   {weeklyEntry.mostImportantTasks.slice(0, 3).map((task) => (
-                    <div key={task.id} className="flex items-center gap-3 text-sm font-serif italic text-paper-text/70">
-                      <div className={`w-1.5 h-1.5 rounded-full ring-2 ring-paper-text/5 ${task.completed ? 'bg-paper-text/30' : 'bg-paper-text/60'}`} />
+                    <div key={task.id} className="flex items-center gap-2 text-xs font-serif italic text-paper-text/70">
+                      <div className={`w-1.5 h-1.5 rounded-full ring-1 ring-paper-text/5 ${task.completed ? 'bg-paper-text/30' : 'bg-paper-text/60'}`} />
                       <span className={task.completed ? 'line-through opacity-50 decoration-paper-text/30' : ''}>{task.text || '(未入力)'}</span>
                     </div>
                   ))}
@@ -253,11 +253,11 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
               {weeklyEntry.yearlyGoalActions && Object.keys(weeklyEntry.yearlyGoalActions).length > 0 && (
                 <div className="relative">
                    <div className="absolute top-0 left-0 w-full border-t border-paper-border-dark/10" />
-                  <h2 className="text-[10px] md:text-xs font-bold text-paper-text/60 mb-4 flex items-center pt-6 tracking-widest">
+                  <h2 className="text-[10px] font-bold text-paper-text/60 mb-3 flex items-center pt-4 tracking-widest">
                     <Target className="w-3.5 h-3.5 mr-2" />
                     目標に向けた今週のアクション
                   </h2>
-                  <div className="space-y-3 pl-2">
+                  <div className="space-y-2 pl-2">
                     {Object.keys(weeklyEntry.yearlyGoalActions).slice(0, 5).map((index) => {
                       const action = weeklyEntry.yearlyGoalActions?.[Number(index)];
                       if (!action) return null;
@@ -266,8 +266,8 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
                       if (!actionText) return null;
                       
                       return (
-                        <div key={index} className="flex items-start gap-3 text-sm font-serif italic text-paper-text/70">
-                           <div className={`w-1.5 h-1.5 mt-2 rounded-full ring-2 ring-paper-text/5 ${isCompleted ? 'bg-paper-text/30' : 'bg-paper-text/60'}`} />
+                        <div key={index} className="flex items-start gap-2 text-xs font-serif italic text-paper-text/70">
+                           <div className={`w-1.5 h-1.5 mt-1.5 rounded-full ring-1 ring-paper-text/5 ${isCompleted ? 'bg-paper-text/30' : 'bg-paper-text/60'}`} />
                           <span className={`leading-relaxed ${isCompleted ? 'line-through opacity-50 decoration-paper-text/30' : ''}`}>{actionText}</span>
                         </div>
                       );
@@ -279,58 +279,58 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
           )}
 
           {/* Tasks Section */}
-          <section className="space-y-8 md:space-y-12">
+          <section className="space-y-6 md:space-y-8">
             {/* Habit Tracker */}
-            <div className="paper-card p-6 md:p-8 relative overflow-hidden group">
+            <div className="paper-card p-5 md:p-6 relative overflow-hidden group">
               <div className="absolute top-0 left-0 w-1 h-full bg-teal-200/80 transition-all duration-500 group-hover:w-1.5" />
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-[10px] md:text-xs font-bold text-paper-text/60 flex items-center tracking-widest">
-                  <CheckSquare className="w-4 h-4 mr-2 text-teal-500" />
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-[10px] font-bold text-paper-text/60 flex items-center tracking-widest">
+                  <CheckSquare className="w-3.5 h-3.5 mr-2 text-teal-500" />
                   習慣トラッカー
                 </h2>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 mb-6">
                 {(habits || []).map((habit) => (
-                  <div key={habit.id} className="flex items-center justify-between group/habit p-2 -mx-2 hover:bg-white/50 rounded-lg transition-colors">
+                  <div key={habit.id} className="flex items-center justify-between group/habit p-1.5 -mx-1.5 hover:bg-white/50 rounded-lg transition-colors">
                     <button
                       onClick={() => toggleHabit(habit.id)}
-                      className="flex items-center gap-3 text-left flex-grow"
+                      className="flex items-center gap-2 text-left flex-grow"
                     >
                       <div className={`transition-all duration-300 ${entry?.habitCompletion?.[habit.id] ? 'scale-110' : 'group-hover/habit:scale-105'}`}>
                          {entry?.habitCompletion?.[habit.id] ? 
-                          <CheckSquare className="w-5 h-5 text-teal-600 fill-teal-50" /> : 
-                          <Square className="w-5 h-5 text-paper-text/20 group-hover/habit:text-paper-text/40" />
+                          <CheckSquare className="w-4 h-4 text-teal-600 fill-teal-50" /> : 
+                          <Square className="w-4 h-4 text-paper-text/20 group-hover/habit:text-paper-text/40" />
                         }
                       </div>
-                      <span className={`text-sm transition-all duration-300 ${entry?.habitCompletion?.[habit.id] ? 'text-paper-text/80 font-medium tracking-wide' : 'text-paper-text/50'}`}>
+                      <span className={`text-xs transition-all duration-300 ${entry?.habitCompletion?.[habit.id] ? 'text-paper-text/80 font-medium tracking-wide' : 'text-paper-text/50'}`}>
                         {habit.name}
                       </span>
                     </button>
                     <button 
                       onClick={() => deleteHabit(habit.id)}
-                      className="opacity-0 group-hover/habit:opacity-100 transition-all p-1.5 hover:bg-rose-50 rounded-md text-rose-300 hover:text-rose-500"
+                      className="opacity-0 group-hover/habit:opacity-100 transition-all p-1 hover:bg-rose-50 rounded-md text-rose-300 hover:text-rose-500"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash2 className="w-3 h-3" />
                     </button>
                   </div>
                 ))}
                 {(!habits || habits.length === 0) && (
-                  <p className="col-span-1 md:col-span-2 text-[10px] text-paper-text/30 py-4 text-center border border-dashed border-paper-border/30 rounded-xl">習慣を追加して記録を始めましょう</p>
+                  <p className="col-span-1 md:col-span-2 text-[10px] text-paper-text/30 py-3 text-center border border-dashed border-paper-border/30 rounded-lg">習慣を追加</p>
                 )}
               </div>
               
-              <div className="flex gap-3 pt-2 border-t border-paper-border/10">
+              <div className="flex gap-2 pt-2 border-t border-paper-border/10">
                 <input
                   type="text"
                   value={newHabitName}
                   onChange={(e) => setNewHabitName(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && addHabit()}
-                  placeholder="新しい習慣を入力..."
-                  className="flex-grow bg-white/30 border border-paper-border/30 rounded-xl px-4 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-teal-500/20 focus:bg-white/50 transition-all placeholder:text-paper-text/30"
+                  placeholder="新しい習慣..."
+                  className="flex-grow bg-white/30 border border-paper-border/30 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-teal-500/20 focus:bg-white/50 transition-all placeholder:text-paper-text/30"
                 />
                 <button 
                   onClick={addHabit}
-                  className="bg-paper-text text-cream-50 px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
+                  className="bg-paper-text text-cream-50 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
                 >
                   Add
                 </button>
@@ -338,23 +338,23 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
             </div>
 
             <div>
-              <h2 className="text-[10px] md:text-xs font-bold text-paper-text/60 mb-6 px-2 tracking-widest">今日のタスク</h2>
-              <div className="space-y-3">
+              <h2 className="text-[10px] font-bold text-paper-text/60 mb-4 px-1 tracking-widest">今日のタスク</h2>
+              <div className="space-y-2">
                 {(entry?.secondaryTasks || [
                   { id: 'sec-1', text: '', completed: false },
                   { id: 'sec-2', text: '', completed: false }
                 ]).map((task, i) => (
-                  <div key={task.id || i} className="flex items-center px-4 py-2 bg-white/30 hover:bg-white/60 rounded-xl transition-colors group">
-                    <button onClick={() => toggleTask('secondaryTasks', task.id)} className="mr-4 transition-transform active:scale-90">
+                  <div key={task.id || i} className="flex items-center px-3 py-1.5 bg-white/30 hover:bg-white/60 rounded-lg transition-colors group">
+                    <button onClick={() => toggleTask('secondaryTasks', task.id)} className="mr-3 transition-transform active:scale-90">
                       {task.completed ? 
-                        <CheckCircle2 className="w-5 h-5 text-paper-text/50" /> : 
-                        <Circle className="w-5 h-5 text-paper-text/20 group-hover:text-paper-text/40" />
+                        <CheckCircle2 className="w-4 h-4 text-paper-text/50" /> : 
+                        <Circle className="w-4 h-4 text-paper-text/20 group-hover:text-paper-text/40" />
                       }
                     </button>
                     <EditableField
                       value={task.text || ''}
                       onSave={(val) => updateTask('secondaryTasks', task.id, { text: val })}
-                      placeholder="タスクを入力..."
+                      placeholder="タスク..."
                       className={`paper-input flex-grow text-sm font-serif italic ${task.completed ? 'line-through opacity-40 decoration-paper-text/20' : ''}`}
                     />
                   </div>
@@ -365,7 +365,7 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
         </div>
 
         {/* Timeline Section */}
-        <section className="paper-card py-8 md:py-10 px-2 md:px-4 relative overflow-hidden h-fit shadow-paper-deep">
+        <section className="paper-card py-6 md:py-8 px-2 md:px-4 relative overflow-hidden h-fit shadow-paper-deep">
           <div className="absolute top-0 left-0 w-1.5 h-full bg-paper-text/5" />
           <Timeline 
             events={entry?.timeline || []} 
@@ -375,32 +375,32 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
         </section>
       </div>
 
-      <footer className="mt-24 pt-12 border-t border-paper-border/10 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 opacity-80 hover:opacity-100 transition-opacity">
-        <div className="space-y-4">
+      <footer className="mt-16 pt-8 border-t border-paper-border/10 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 opacity-80 hover:opacity-100 transition-opacity">
+        <div className="space-y-3">
           <h3 className="text-[10px] font-bold text-paper-text/50 tracking-widest">今日のハイライト</h3>
           <EditableField
             type="textarea"
             value={entry?.highlight || ''}
             onSave={(val) => saveEntry({ highlight: val })}
-            className="w-full bg-white/20 border border-paper-border/20 rounded-2xl p-5 focus:outline-none focus:bg-white/40 focus:shadow-sm text-sm font-serif italic min-h-[120px] transition-all resize-none"
+            className="w-full bg-white/20 border border-paper-border/20 rounded-xl p-4 focus:outline-none focus:bg-white/40 focus:shadow-sm text-sm font-serif italic min-h-[80px] transition-all resize-none"
           />
         </div>
-        <div className="space-y-4">
+        <div className="space-y-3">
           <h3 className="text-[10px] font-bold text-paper-text/50 tracking-widest">学んだこと</h3>
           <EditableField
             type="textarea"
             value={entry?.learning || ''}
             onSave={(val) => saveEntry({ learning: val })}
-            className="w-full bg-white/20 border border-paper-border/20 rounded-2xl p-5 focus:outline-none focus:bg-white/40 focus:shadow-sm text-sm font-serif italic min-h-[120px] transition-all resize-none"
+            className="w-full bg-white/20 border border-paper-border/20 rounded-xl p-4 focus:outline-none focus:bg-white/40 focus:shadow-sm text-sm font-serif italic min-h-[80px] transition-all resize-none"
           />
         </div>
-        <div className="space-y-4">
+        <div className="space-y-3">
           <h3 className="text-[10px] font-bold text-paper-text/50 tracking-widest">記憶に残したいこと</h3>
           <EditableField
             type="textarea"
             value={entry?.remember || ''}
             onSave={(val) => saveEntry({ remember: val })}
-            className="w-full bg-white/20 border border-paper-border/20 rounded-2xl p-5 focus:outline-none focus:bg-white/40 focus:shadow-sm text-sm font-serif italic min-h-[120px] transition-all resize-none"
+            className="w-full bg-white/20 border border-paper-border/20 rounded-xl p-4 focus:outline-none focus:bg-white/40 focus:shadow-sm text-sm font-serif italic min-h-[80px] transition-all resize-none"
           />
         </div>
       </footer>

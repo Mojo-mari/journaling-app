@@ -113,18 +113,18 @@ const MonthlyView: React.FC<MonthlyViewProps> = ({ selectedDate, onDateSelect })
         </div>
       )}
 
-      <div className="space-y-12">
+      <div className="space-y-6">
         {/* Yearly Connection Section */}
-        <section className="bg-white/40 backdrop-blur-sm py-8 px-6 md:px-10 rounded-[2rem] border border-paper-border/30 shadow-paper relative overflow-hidden group">
-          <div className="absolute top-0 left-0 w-1.5 h-full bg-paper-text/5 transition-all duration-500 group-hover:bg-paper-text/10" />
-          <div className="flex items-center mb-8">
-            <div className="p-2 bg-white/50 rounded-lg mr-3 shadow-sm">
-              <Layout className="w-4 h-4 text-paper-text/70" />
+        <section className="bg-white/40 backdrop-blur-sm py-4 px-4 md:px-6 rounded-[1.5rem] border border-paper-border/30 shadow-paper relative overflow-hidden group">
+          <div className="absolute top-0 left-0 w-1 h-full bg-paper-text/5 transition-all duration-500 group-hover:bg-paper-text/10" />
+          <div className="flex items-center mb-4">
+            <div className="p-1.5 bg-white/50 rounded-lg mr-2 shadow-sm">
+              <Layout className="w-3.5 h-3.5 text-paper-text/70" />
             </div>
-            <h2 className="text-[10px] md:text-xs font-bold text-paper-text/70 tracking-widest">年間計画からのアクション</h2>
+            <h2 className="text-[10px] font-bold text-paper-text/70 tracking-widest">年間計画からのアクション</h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
             {Array.from({ length: 5 }).map((_, i) => {
               const yearlyGoal = yearlyEntry?.goals[i];
               const monthlyAction = yearlyGoal?.monthlyActions?.[monthNum];
@@ -132,19 +132,19 @@ const MonthlyView: React.FC<MonthlyViewProps> = ({ selectedDate, onDateSelect })
               const actionText = monthlyAction && typeof monthlyAction === 'object' ? monthlyAction.text : (typeof monthlyAction === 'string' ? monthlyAction : '');
 
               return (
-                <div key={i} className="bg-white/60 p-5 rounded-2xl border border-white/50 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col hover:-translate-y-1 group/card">
-                  <div className="flex flex-col mb-4">
-                    <span className="text-[9px] font-bold text-paper-text/30 tracking-widest mb-1">年間目標 {i + 1}</span>
-                    <span className="text-xs font-serif italic font-bold text-paper-text/60 line-clamp-2 min-h-[2.5em] leading-relaxed">
+                <div key={i} className="bg-white/60 p-3 rounded-xl border border-white/50 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col hover:-translate-y-0.5 group/card">
+                  <div className="flex flex-col mb-2">
+                    <span className="text-[9px] font-bold text-paper-text/30 tracking-widest mb-0.5">年間目標 {i + 1}</span>
+                    <span className="text-[10px] font-serif italic font-bold text-paper-text/60 line-clamp-2 min-h-[1.5em] leading-snug">
                       {yearlyGoal?.text || `(目標 ${i + 1} 未入力)`}
                     </span>
                   </div>
-                  <div className="mt-auto pt-3 border-t border-paper-border/10 flex flex-col">
-                    <div className="flex items-start gap-3">
-                      <button onClick={() => toggleYearlyTask(i)} className="mt-1 transition-transform active:scale-90">
+                  <div className="mt-auto pt-2 border-t border-paper-border/10 flex flex-col">
+                    <div className="flex items-start gap-2">
+                      <button onClick={() => toggleYearlyTask(i)} className="mt-0.5 transition-transform active:scale-90">
                         {isCompleted ? 
-                          <CheckCircle2 className="w-4 h-4 text-paper-text/60" /> : 
-                          <Circle className="w-4 h-4 text-paper-text/20 group-hover/card:text-paper-text/40 transition-colors" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-paper-text/60" /> : 
+                          <Circle className="w-3.5 h-3.5 text-paper-text/20 group-hover/card:text-paper-text/40 transition-colors" />
                         }
                       </button>
                       <EditableField
@@ -152,7 +152,7 @@ const MonthlyView: React.FC<MonthlyViewProps> = ({ selectedDate, onDateSelect })
                         value={actionText}
                         onSave={(val) => updateYearlyTaskText(i, val)}
                         placeholder="アクション..."
-                        className={`text-xs leading-relaxed font-serif italic flex-grow bg-transparent focus:outline-none min-h-[40px] placeholder:text-paper-text/20 ${isCompleted ? 'line-through opacity-40 decoration-paper-text/20' : ''}`}
+                        className={`text-[10px] leading-relaxed font-serif italic flex-grow bg-transparent focus:outline-none min-h-[20px] placeholder:text-paper-text/20 ${isCompleted ? 'line-through opacity-40 decoration-paper-text/20' : ''}`}
                       />
                     </div>
                   </div>
@@ -162,12 +162,12 @@ const MonthlyView: React.FC<MonthlyViewProps> = ({ selectedDate, onDateSelect })
           </div>
         </section>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
-          <div className="space-y-8 md:space-y-12">
-            <section className="paper-card p-6 md:p-8 relative overflow-hidden group">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+          <div className="space-y-6 md:space-y-8">
+            <section className="paper-card p-5 md:p-6 relative overflow-hidden group">
               <div className="absolute top-0 left-0 w-1 h-full bg-indigo-200/80 transition-all duration-500 group-hover:w-1.5" />
-              <h2 className="text-[10px] md:text-xs font-bold text-paper-text/50 mb-6 flex items-center tracking-widest">
-                 <Target className="w-4 h-4 mr-2 text-indigo-400" />
+              <h2 className="text-[10px] font-bold text-paper-text/50 mb-4 flex items-center tracking-widest">
+                 <Target className="w-3.5 h-3.5 mr-2 text-indigo-400" />
                 今月の意図・テーマ
               </h2>
               <EditableField
@@ -175,62 +175,62 @@ const MonthlyView: React.FC<MonthlyViewProps> = ({ selectedDate, onDateSelect })
                 value={entry?.intention || ''}
                 onSave={(val) => saveEntry({ intention: val })}
                 placeholder="今月の意図やテーマを入力..."
-                className="w-full bg-white/40 border-none rounded-xl p-5 focus:ring-0 text-base font-serif italic shadow-inner transition-all placeholder:text-paper-text/20 min-h-[150px] resize-none leading-relaxed"
+                className="w-full bg-white/40 border-none rounded-xl p-4 focus:ring-0 text-sm font-serif italic shadow-inner transition-all placeholder:text-paper-text/20 min-h-[100px] resize-none leading-relaxed"
               />
             </section>
 
-            <section className="paper-card p-6 md:p-8 shadow-paper-hover">
-              <div className="flex justify-between items-center mb-8">
-                <h2 className="text-xs font-bold text-paper-text/70 flex items-center tracking-widest">
-                  <Target className="w-4 h-4 mr-2 text-paper-text" />
+            <section className="paper-card p-5 md:p-6 shadow-paper-hover">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-[10px] font-bold text-paper-text/70 flex items-center tracking-widest">
+                  <Target className="w-3.5 h-3.5 mr-2 text-paper-text" />
                   その他の月間目標
                 </h2>
                 <button 
                   onClick={addGoal}
-                  className="w-8 h-8 flex items-center justify-center bg-paper-text text-cream-50 rounded-full hover:scale-110 active:scale-95 transition-all shadow-md hover:shadow-lg"
+                  className="w-6 h-6 flex items-center justify-center bg-paper-text text-cream-50 rounded-full hover:scale-110 active:scale-95 transition-all shadow-md hover:shadow-lg"
                 >
-                  <Plus className="w-5 h-5" />
+                  <Plus className="w-4 h-4" />
                 </button>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {(entry?.goals || []).map((goal) => (
-                  <div key={goal.id} className="flex items-center group bg-white/40 p-3 rounded-xl border border-transparent hover:border-paper-border/20 transition-all hover:bg-white/60 hover:shadow-sm">
-                    <button onClick={() => toggleGoal(goal.id)} className="mr-4 transition-transform active:scale-90">
+                  <div key={goal.id} className="flex items-center group bg-white/40 p-2 rounded-lg border border-transparent hover:border-paper-border/20 transition-all hover:bg-white/60 hover:shadow-sm">
+                    <button onClick={() => toggleGoal(goal.id)} className="mr-3 transition-transform active:scale-90">
                       {goal.completed ? 
-                        <CheckCircle2 className="w-5 h-5 text-paper-text" /> : 
-                        <Circle className="w-5 h-5 text-paper-text/20 hover:text-paper-text/40 transition-colors" />
+                        <CheckCircle2 className="w-4 h-4 text-paper-text" /> : 
+                        <Circle className="w-4 h-4 text-paper-text/20 hover:text-paper-text/40 transition-colors" />
                       }
                     </button>
                     <EditableField
                       value={goal.text}
                       onSave={(val) => updateGoal(goal.id, val)}
                       placeholder="目標を入力..."
-                      className={`flex-grow bg-transparent font-serif italic focus:outline-none text-base ${goal.completed ? 'line-through opacity-40 decoration-paper-text/20' : ''}`}
+                      className={`flex-grow bg-transparent font-serif italic focus:outline-none text-sm ${goal.completed ? 'line-through opacity-40 decoration-paper-text/20' : ''}`}
                     />
-                    <button onClick={() => deleteGoal(goal.id)} className="opacity-0 group-hover:opacity-100 ml-2 p-1.5 hover:bg-rose-50 rounded-lg text-rose-300 hover:text-rose-500 transition-all">
-                      <Trash2 className="w-4 h-4" />
+                    <button onClick={() => deleteGoal(goal.id)} className="opacity-0 group-hover:opacity-100 ml-2 p-1 hover:bg-rose-50 rounded-md text-rose-300 hover:text-rose-500 transition-all">
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 ))}
                 {(!entry?.goals || entry.goals.length === 0) && (
-                  <p className="text-center py-8 text-paper-text/30 text-xs font-serif italic">今月の目標を追加しましょう</p>
+                  <p className="text-center py-6 text-paper-text/30 text-[10px] font-serif italic">目標を追加</p>
                 )}
               </div>
             </section>
           </div>
 
-          <section className="paper-card p-6 md:p-8 relative overflow-hidden h-fit group">
-            <div className="absolute top-0 left-0 w-1.5 h-full bg-paper-text/5 transition-all duration-500 group-hover:bg-paper-text/10" />
-            <h2 className="text-[10px] md:text-xs font-bold text-paper-text/50 mb-6 flex items-center tracking-widest">
-              <BookOpen className="w-4 h-4 mr-2" />
+          <section className="paper-card p-5 md:p-6 relative overflow-hidden h-fit group">
+            <div className="absolute top-0 left-0 w-1 h-full bg-paper-text/5 transition-all duration-500 group-hover:bg-paper-text/10" />
+            <h2 className="text-[10px] font-bold text-paper-text/50 mb-4 flex items-center tracking-widest">
+              <BookOpen className="w-3.5 h-3.5 mr-2" />
               今月の振り返り
             </h2>
             <EditableField
               type="textarea"
               value={entry?.reflection || ''}
               onSave={(val) => saveEntry({ reflection: val })}
-              placeholder="今月の振り返り、学んだこと、次月への課題など..."
-              className="w-full bg-white/30 border-none rounded-2xl p-6 focus:ring-0 focus:bg-white/50 text-base font-serif italic shadow-inner transition-all placeholder:text-paper-text/20 min-h-[500px] resize-none leading-loose"
+              placeholder="今月の振り返り..."
+              className="w-full bg-white/30 border-none rounded-xl p-4 focus:ring-0 focus:bg-white/50 text-sm font-serif italic shadow-inner transition-all placeholder:text-paper-text/20 min-h-[300px] resize-none leading-loose"
             />
           </section>
         </div>
