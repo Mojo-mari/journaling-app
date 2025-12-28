@@ -39,14 +39,6 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
     localGoalsRef.current = localGoals;
   }, [localGoals]);
 
-  // 年度が変わった時、ローカル状態を即座にリセット
-  useEffect(() => {
-    if (yearId !== loadedYearId) {
-      // 年度が変わったら、即座に空の状態にリセット（DBからのデータ待ち）
-      setLocalGoals(createEmptyGoals());
-    }
-  }, [yearId, loadedYearId]);
-
   // DBのデータが変わった時にローカル状態を同期
   useEffect(() => {
     if (entry === undefined) return; // ローディング中は何もしない
@@ -65,21 +57,22 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
       setLoadedYearId(yearId);
     } else if (entry.goals) {
       // DBにデータがある場合
+      const goals = entry.goals.length >= 5 
+        ? JSON.parse(JSON.stringify(entry.goals))
+        : [...entry.goals, ...createEmptyGoals()].slice(0, 5);
+
       if (yearId !== loadedYearId) {
         // 年度が変わった場合、DBのデータで上書き
-        const goals = entry.goals.length >= 5 
-          ? JSON.parse(JSON.stringify(entry.goals))
-          : [...entry.goals, ...createEmptyGoals()].slice(0, 5);
         setLocalGoals(goals);
         setLoadedYearId(yearId);
       } else {
-        // 同じ年度内でDBが更新された場合（他のデバイスからの更新など）
-        // 編集中はスキップ
+        // 同じ年度内でDBが更新された場合
+        // ただし、編集中（フォーカスがある）の場合はスキップ
         if (!document.activeElement?.closest('textarea')) {
-          const dbGoalsJson = JSON.stringify(entry.goals);
+          const dbGoalsJson = JSON.stringify(goals);
           const localGoalsJson = JSON.stringify(localGoalsRef.current);
           if (dbGoalsJson !== localGoalsJson) {
-            setLocalGoals(JSON.parse(dbGoalsJson));
+            setLocalGoals(goals);
           }
         }
       }
