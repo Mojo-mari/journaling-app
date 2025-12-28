@@ -1,49 +1,86 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif+JP:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Serif+JP:wght@300;400;500;600&display=swap');
 
 @theme {
-  --color-cream-50: #fdfcf7;
-  --color-cream-100: #f9f7e8;
-  --color-cream-200: #f2eed1;
-  --color-cream-300: #e6dfa8;
-  --color-cream-default: #f9f7e8;
+  --color-cream-50: #FCFBF7;
+  --color-cream-100: #F7F5EB;
+  --color-cream-200: #EBE6D5;
+  --color-cream-300: #DCD6BC;
+  --color-cream-default: #F7F5EB;
 
-  --color-paper-text: #3a3a3a;
-  --color-paper-border: #d1cebd;
+  /* より柔らかく、かつ読みやすいチャコールグレー */
+  --color-paper-text: #44403C; 
+  --color-paper-text-light: #78716C;
+  --color-paper-border: #E7E5E4;
+  --color-paper-border-dark: #D6D3D1;
   
   --font-serif: "Noto Serif JP", "Georgia", serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+
+  --shadow-paper: 0 2px 8px -2px rgba(60, 50, 40, 0.05), 0 1px 2px -1px rgba(60, 50, 40, 0.02);
+  --shadow-paper-hover: 0 8px 16px -4px rgba(60, 50, 40, 0.08), 0 2px 4px -2px rgba(60, 50, 40, 0.04);
+  --shadow-paper-deep: 0 12px 24px -6px rgba(60, 50, 40, 0.1), 0 4px 6px -2px rgba(60, 50, 40, 0.05);
 }
 
-/* ブラウザやOSのダークモード設定を無効化し、生成り色の背景を強制します */
 :root {
-  background-color: #f9f7e8 !important;
-  color: #3a3a3a !important;
+  background-color: #F7F5EB !important;
+  color: #44403C !important;
   color-scheme: light !important;
 }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: #f9f7e8 !important;
-  color: #3a3a3a !important;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #F7F5EB !important;
+  color: #44403C !important;
+  font-family: 'Inter', system-ui, sans-serif;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* スクロールバーのカスタマイズ（アナログ感を出すため） */
+/* カスタムユーティリティ */
+@layer components {
+  .paper-card {
+    @apply bg-white/60 backdrop-blur-sm border border-white/50 shadow-paper rounded-2xl transition-all duration-300;
+  }
+  
+  .paper-card:hover {
+    @apply shadow-paper-hover translate-y-[-1px] bg-white/80;
+  }
+
+  .paper-input {
+    @apply bg-transparent border-b border-paper-border-dark/50 px-0 py-2 transition-all duration-300 outline-none rounded-none placeholder:text-paper-text-light/50 font-serif;
+  }
+
+  .paper-input:focus {
+    @apply border-paper-text/40 bg-white/20 px-2 rounded-md;
+  }
+
+  .btn-primary {
+    @apply px-4 py-2 bg-paper-text text-cream-50 rounded-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 text-sm font-medium tracking-wide;
+  }
+
+  .btn-ghost {
+    @apply px-3 py-1.5 text-paper-text/70 hover:text-paper-text hover:bg-paper-text/5 rounded-lg transition-all duration-200 text-sm;
+  }
+}
+
+/* スクロールバー */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f9f7e8;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d1cebd;
-  border-radius: 4px;
+  background: #D6D3D1;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #b8b5a0;
+  background: #A8A29E;
 }

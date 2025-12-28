@@ -179,13 +179,13 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
   };
 
   return (
-    <div className="p-6 md:p-10 min-h-screen pb-20">
-      <header className="mb-10 border-b border-paper-border pb-6 flex justify-between items-end">
+    <div className="min-h-screen pb-20">
+      <header className="mb-12 border-b border-paper-border pb-6 flex justify-between items-end">
         <div>
-          <h1 className="text-4xl font-serif text-paper-text italic font-bold tracking-tight">Yearly Planning</h1>
+          <h1 className="text-4xl md:text-5xl font-serif text-paper-text italic font-bold tracking-tight mb-2">Yearly Planning</h1>
           <button 
             onClick={() => setIsCalendarOpen(true)}
-            className="text-paper-text opacity-60 flex items-center mt-2 font-medium text-2xl font-serif italic hover:opacity-100 hover:bg-cream-200 px-2 py-1 rounded-lg transition-all -ml-2"
+            className="text-paper-text opacity-60 flex items-center mt-2 font-medium text-2xl font-serif italic hover:opacity-100 hover:bg-cream-200 px-3 py-1.5 rounded-full transition-all -ml-2"
           >
             <CalendarIcon className="w-6 h-6 mr-2" />
             {yearId}
@@ -195,13 +195,13 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
 
       {/* Date Picker Modal */}
       {isCalendarOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-paper-text/20 backdrop-blur-sm" onClick={() => setIsCalendarOpen(false)}>
-          <div className="relative w-full max-w-sm bg-cream-100 rounded-3xl shadow-2xl border border-paper-border p-2" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-paper-text/10 backdrop-blur-md" onClick={() => setIsCalendarOpen(false)}>
+          <div className="relative w-full max-w-sm bg-white/90 rounded-[2rem] shadow-paper-deep border border-white/50 p-4" onClick={e => e.stopPropagation()}>
             <button 
               onClick={() => setIsCalendarOpen(false)}
-              className="absolute -top-12 right-0 p-2 text-cream-50 hover:text-white transition-colors"
+              className="absolute -top-12 right-0 p-2 text-paper-text hover:text-paper-text/70 transition-colors bg-white/50 rounded-full backdrop-blur-sm"
             >
-              <X className="w-8 h-8" />
+              <X className="w-6 h-6" />
             </button>
             <Calendar selectedDate={selectedDate} onDateSelect={handleDateSelect} highlightMode="year" />
           </div>
@@ -210,35 +210,35 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
 
       <div className="space-y-12">
         {/* Theme Section */}
-        <section className="bg-cream-50 p-8 rounded-3xl border border-paper-border shadow-md relative overflow-hidden max-w-2xl mx-auto">
-          <div className="absolute top-0 left-0 w-2 h-full bg-amber-200" />
-          <h2 className="text-[12px] uppercase tracking-[0.3em] text-paper-text/50 mb-6 font-bold flex items-center justify-center">
+        <section className="bg-white/40 backdrop-blur-sm p-8 md:p-10 rounded-[2rem] border border-paper-border/30 shadow-paper relative overflow-hidden max-w-3xl mx-auto group hover:bg-white/50 transition-colors duration-500">
+          <div className="absolute top-0 left-0 w-2 h-full bg-amber-200/80 transition-all duration-500 group-hover:w-3" />
+          <h2 className="text-[12px] font-bold text-paper-text/50 mb-8 flex items-center justify-center tracking-widest">
             <Sparkles className="w-5 h-5 mr-3 text-amber-500" />
-            Year's Theme
+            今年のテーマ
           </h2>
           <EditableField
             type="textarea"
             value={entry?.theme || ''}
             onSave={(val) => saveEntry({ theme: val })}
             placeholder="今年一年の中心となるテーマや指針を入力..."
-            className="w-full bg-cream-100/30 border border-paper-border/20 rounded-2xl p-6 focus:outline-none focus:ring-1 focus:ring-paper-border/50 min-h-[100px] text-xl font-serif italic shadow-inner transition-all text-center placeholder:text-paper-text/10"
+            className="w-full bg-transparent border-none rounded-2xl p-4 focus:ring-0 text-2xl md:text-3xl font-serif italic shadow-none transition-all text-center placeholder:text-paper-text/10 leading-relaxed min-h-[120px]"
           />
         </section>
 
         {/* 5 Specific Goals Section */}
-        <section className="bg-white/40 p-8 rounded-3xl border border-paper-border/40 shadow-sm">
-          <h2 className="text-sm uppercase tracking-[0.2em] text-paper-text opacity-70 font-bold flex items-center mb-8">
+        <section className="bg-white/40 backdrop-blur-sm p-8 rounded-[2rem] border border-paper-border/30 shadow-paper">
+          <h2 className="text-sm font-bold text-paper-text/70 flex items-center mb-8 tracking-widest">
             <Target className="w-5 h-5 mr-3 text-paper-text" />
-            5 Key Goals for the Year
+            年間重点目標 (5 Key Goals)
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
             {Array.from({ length: 5 }).map((_, i) => {
               const goal = localGoals[i];
               return (
-                <div key={i} className="flex flex-col bg-cream-50/50 p-5 rounded-2xl border border-paper-border/20 hover:border-paper-border/40 transition-all shadow-sm group">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-[10px] font-bold text-paper-text/30 uppercase tracking-widest">Goal {i + 1}</span>
-                    <button onClick={() => toggleGoal(i)}>
+                <div key={i} className="flex flex-col bg-white/70 backdrop-blur-sm p-6 rounded-2xl border border-white/60 shadow-sm hover:shadow-paper-hover hover:-translate-y-1 transition-all duration-300 group">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-[10px] font-bold text-paper-text/30 tracking-widest bg-paper-text/5 px-2 py-1 rounded-full">Goal {i + 1}</span>
+                    <button onClick={() => toggleGoal(i)} className="transition-transform active:scale-90">
                       {goal?.completed ? 
                         <CheckCircle2 className="w-5 h-5 text-paper-text" /> : 
                         <Circle className="w-5 h-5 text-paper-text/10 hover:text-paper-text/30" />
@@ -251,7 +251,7 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
                     onSave={(val) => handleGoalTextSave(i, val)}
                     onChange={(val) => handleGoalTextChange(i, val)} // ローカル状態のみ更新（超高速）
                     placeholder={`${i + 1}つ目の目標を入力...`}
-                    className={`bg-transparent focus:outline-none text-sm font-serif font-medium min-h-[80px] leading-relaxed ${goal?.completed ? 'line-through opacity-40' : ''}`}
+                    className={`bg-transparent focus:outline-none text-base font-serif font-medium min-h-[120px] leading-relaxed resize-none ${goal?.completed ? 'line-through opacity-40' : ''}`}
                   />
                 </div>
               );
@@ -260,23 +260,23 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
         </section>
 
         {/* Monthly Action Plan Detail Area */}
-        <section className="bg-white/40 rounded-3xl border border-paper-border/40 shadow-sm overflow-hidden">
-          <div className="p-8 border-b border-paper-border/20 bg-cream-50/30">
-            <h2 className="text-sm uppercase tracking-[0.2em] text-paper-text opacity-70 font-bold flex items-center">
+        <section className="bg-white/40 backdrop-blur-sm rounded-[2rem] border border-paper-border/30 shadow-paper overflow-hidden">
+          <div className="p-8 border-b border-paper-border/10 bg-white/30 backdrop-blur-md">
+            <h2 className="text-sm font-bold text-paper-text/70 flex items-center tracking-widest">
               <ArrowRight className="w-5 h-5 mr-3 text-paper-text" />
-              Monthly Action Plan
+              月別アクションプラン
             </h2>
-            <p className="text-[11px] text-paper-text/40 mt-1 ml-8">5つの目標達成に向けた、月ごとの具体的なアクションを計画しましょう。</p>
+            <p className="text-[11px] text-paper-text/40 mt-2 ml-8 font-serif italic">5つの目標達成に向けた、月ごとの具体的なアクションを計画しましょう。</p>
           </div>
           
           <div className="overflow-x-auto no-scrollbar relative max-h-[600px]">
             <div className="min-w-[1200px]">
               <table className="w-full border-collapse">
                 <thead className="sticky top-0 z-30 shadow-sm">
-                  <tr className="bg-cream-50/95 backdrop-blur-sm">
-                    <th className="sticky left-0 z-40 w-48 p-4 text-left border-r border-paper-border/10 text-[10px] uppercase tracking-widest text-paper-text/40 font-bold bg-cream-50">Goal</th>
+                  <tr className="bg-white/90 backdrop-blur-md border-b border-paper-border/10">
+                    <th className="sticky left-0 z-40 w-56 p-4 text-left border-r border-paper-border/10 text-[10px] tracking-widest text-paper-text/40 font-bold bg-white/95 backdrop-blur-md shadow-[2px_0_10px_-5px_rgba(0,0,0,0.1)]">Goal</th>
                     {MONTHS.map(month => (
-                      <th key={month} className="p-4 text-center border-r border-paper-border/10 text-[10px] uppercase tracking-widest text-paper-text/40 font-bold">
+                      <th key={month} className="p-4 text-center border-r border-paper-border/10 text-[10px] tracking-widest text-paper-text/40 font-bold">
                         {month}
                       </th>
                     ))}
@@ -287,11 +287,11 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
                     const goal = localGoals[goalIndex];
                     const dbGoal = entry?.goals[goalIndex];
                     return (
-                      <tr key={goalIndex} className="border-t border-paper-border/10 hover:bg-cream-50/10 transition-colors">
-                        <td className="sticky left-0 z-10 p-4 border-r border-paper-border/10 bg-cream-50/95 backdrop-blur-sm shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">
-                          <div className="flex flex-col">
-                            <span className="text-[9px] font-bold text-paper-text/30 mb-1">GOAL {goalIndex + 1}</span>
-                            <span className={`text-xs font-serif italic font-bold text-paper-text/70 line-clamp-2 min-h-[2.5rem] ${goal?.completed ? 'line-through opacity-30' : ''}`}>
+                      <tr key={goalIndex} className="border-t border-paper-border/5 hover:bg-white/40 transition-colors group/row">
+                        <td className="sticky left-0 z-10 p-5 border-r border-paper-border/10 bg-white/80 backdrop-blur-md shadow-[2px_0_10px_-5px_rgba(0,0,0,0.05)] group-hover/row:bg-white/90 transition-colors">
+                          <div className="flex flex-col gap-1">
+                            <span className="text-[9px] font-bold text-paper-text/30 tracking-widest">GOAL {goalIndex + 1}</span>
+                            <span className={`text-xs font-serif italic font-bold text-paper-text/80 line-clamp-3 min-h-[2.5rem] leading-relaxed ${goal?.completed ? 'line-through opacity-30' : ''}`}>
                               {goal?.text || `(目標 ${goalIndex + 1} を未入力)`}
                             </span>
                           </div>
@@ -302,15 +302,15 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
                           const actionText = action && typeof action === 'object' ? action.text : (typeof action === 'string' ? action : '');
                           
                           return (
-                            <td key={monthIndex} className="p-2 border-r border-paper-border/10 align-top group">
-                              <div className="flex flex-col h-full">
+                            <td key={monthIndex} className="p-2 border-r border-paper-border/5 align-top group/cell min-w-[140px] hover:bg-white/50 transition-colors">
+                              <div className="flex flex-col h-full p-1 rounded-lg">
                                 <button 
                                   onClick={() => toggleMonthlyAction(goalIndex, monthIndex)}
-                                  className="mb-1 self-start"
+                                  className="mb-1 self-start opacity-30 group-hover/cell:opacity-100 transition-opacity"
                                 >
                                   {isCompleted ? 
                                     <CheckCircle2 className="w-3.5 h-3.5 text-paper-text/60" /> : 
-                                    <Circle className="w-3.5 h-3.5 text-paper-text/10 hover:text-paper-text/30" />
+                                    <Circle className="w-3.5 h-3.5 text-paper-text/40 hover:text-paper-text/60" />
                                   }
                                 </button>
                                   <EditableField
@@ -318,7 +318,7 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
                                     value={actionText}
                                     onSave={(val) => updateMonthlyAction(goalIndex, monthIndex, val)}
                                     placeholder="..."
-                                    className={`w-full h-20 bg-transparent font-serif focus:bg-white/50 border-none rounded-lg p-1 text-[10px] leading-snug transition-all resize-none placeholder:text-paper-text/5 ${isCompleted ? 'line-through opacity-30' : ''}`}
+                                    className={`w-full h-24 bg-transparent font-serif focus:bg-white/60 focus:shadow-sm border-none rounded-lg p-2 text-[11px] leading-relaxed transition-all resize-none placeholder:text-paper-text/5 ${isCompleted ? 'line-through opacity-30' : ''}`}
                                   />
                               </div>
                             </td>
@@ -334,40 +334,40 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
         </section>
 
         {/* Reflection Section */}
-        <section className="bg-cream-50 p-8 rounded-3xl border border-paper-border shadow-sm relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-2 h-full bg-paper-text/10" />
-          <h2 className="text-[12px] uppercase tracking-[0.3em] text-paper-text/50 mb-6 font-bold flex items-center">
+        <section className="bg-white/40 backdrop-blur-sm p-8 rounded-[2rem] border border-paper-border/30 shadow-paper relative overflow-hidden group">
+          <div className="absolute top-0 left-0 w-2 h-full bg-paper-text/5 transition-all duration-500 group-hover:bg-paper-text/10" />
+          <h2 className="text-[12px] font-bold text-paper-text/50 mb-8 flex items-center justify-center tracking-widest">
             <BookOpen className="w-5 h-5 mr-3" />
-            Yearly Reflection
+            年間の振り返り
           </h2>
           <EditableField
             type="textarea"
             value={entry?.reflection || ''}
             onSave={(val) => saveEntry({ reflection: val })}
             placeholder="一年を振り返って、心に残った出来事や成長した点など..."
-            className="w-full bg-cream-100/30 border border-paper-border/20 rounded-2xl p-6 focus:outline-none focus:ring-1 focus:ring-paper-border/50 min-h-[150px] text-sm font-serif shadow-inner transition-all leading-relaxed"
+            className="w-full bg-white/30 border-none rounded-2xl p-6 focus:ring-0 text-base font-serif italic shadow-inner transition-all leading-loose min-h-[200px] resize-none"
           />
         </section>
 
         {/* Goal-Specific Reflections */}
-        <section className="bg-white/40 p-8 rounded-3xl border border-paper-border/40 shadow-sm">
-          <h2 className="text-sm uppercase tracking-[0.2em] text-paper-text opacity-70 font-bold flex items-center mb-8">
+        <section className="bg-white/40 backdrop-blur-sm p-8 rounded-[2rem] border border-paper-border/30 shadow-paper">
+          <h2 className="text-sm font-bold text-paper-text/70 flex items-center mb-8 tracking-widest">
             <Target className="w-5 h-5 mr-3 text-paper-text" />
-            Goal-Specific Reflections
+            目標ごとの振り返り
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
             {Array.from({ length: 5 }).map((_, i) => {
               const goal = localGoals[i];
               return (
-                <div key={i} className="flex flex-col bg-cream-50/30 p-5 rounded-2xl border border-paper-border/10 hover:border-paper-border/30 transition-all group">
-                  <div className="flex items-center justify-between mb-3 border-b border-paper-border/5 pb-2">
-                    <span className="text-[9px] font-bold text-paper-text/30 uppercase tracking-widest">Reflection {i + 1}</span>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${goal?.completed ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                <div key={i} className="flex flex-col bg-white/60 backdrop-blur-sm p-5 rounded-2xl border border-white/50 shadow-sm hover:shadow-md transition-all group hover:-translate-y-1">
+                  <div className="flex items-center justify-between mb-4 border-b border-paper-border/5 pb-3">
+                    <span className="text-[9px] font-bold text-paper-text/30 tracking-widest">Reflection {i + 1}</span>
+                    <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full transition-colors ${goal?.completed ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
                       {goal?.completed ? 'Done' : 'In Progress'}
                     </span>
                   </div>
                   <div className="mb-4">
-                    <p className={`text-[11px] font-serif italic font-bold text-paper-text/60 line-clamp-2 min-h-[2rem] ${goal?.completed ? 'line-through opacity-30' : ''}`}>
+                    <p className={`text-[11px] font-serif italic font-bold text-paper-text/60 line-clamp-2 min-h-[2rem] leading-relaxed ${goal?.completed ? 'line-through opacity-30' : ''}`}>
                       {goal?.text || `(目標 ${i + 1} 未入力)`}
                     </p>
                   </div>
@@ -375,8 +375,8 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
                     type="textarea"
                     value={goal?.reflection || ''}
                     onSave={(val) => updateGoalReflection(i, val)}
-                    placeholder="この目標についての振り返りを記入..."
-                    className="w-full bg-white/40 border border-paper-border/10 rounded-xl p-3 font-serif italic focus:outline-none focus:bg-white/80 text-xs min-h-[120px] shadow-inner transition-all placeholder:italic"
+                    placeholder="振り返り..."
+                    className="w-full bg-transparent border-t border-paper-border/5 rounded-none p-2 font-serif italic focus:outline-none text-xs min-h-[120px] transition-all placeholder:italic placeholder:text-paper-text/20 leading-relaxed resize-none mt-auto"
                   />
                 </div>
               );
@@ -389,4 +389,3 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
 };
 
 export default YearlyView;
-

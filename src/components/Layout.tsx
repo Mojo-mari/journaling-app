@@ -24,104 +24,77 @@ const Layout: React.FC<LayoutProps> = ({
     setIsCalendarOpen(false); // 日付を選択したらモバイルでは閉じる
   };
 
+  const navItems = [
+    { id: 'yearly', icon: Layers, label: 'Yearly' },
+    { id: 'monthly', icon: CalendarDays, label: 'Monthly' },
+    { id: 'weekly', icon: LayoutIcon, label: 'Weekly' },
+    { id: 'daily', icon: CalendarIcon, label: 'Daily' },
+    { id: 'history', icon: Search, label: 'Search' },
+  ] as const;
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-cream-100 text-paper-text font-sans selection:bg-cream-300">
-      {/* Sidebar / Navigation */}
-      <nav className="w-full md:w-20 lg:w-72 bg-cream-50 border-r border-paper-border flex flex-col items-center py-4 md:py-8 px-4 z-20">
+      {/* Sidebar / Navigation - Sophisticated Style */}
+      <nav className="w-full md:w-20 lg:w-72 bg-cream-50/80 backdrop-blur-md border-r border-paper-border/50 flex flex-col items-center py-4 md:py-8 px-4 z-20 shadow-[4px_0_24px_-4px_rgba(0,0,0,0.02)]">
         {/* Logo Section */}
         <div className="mb-8 md:mb-12 flex flex-row md:flex-col items-center justify-between w-full md:justify-start">
-          <div className="flex items-center">
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-paper-text rounded-xl flex items-center justify-center text-cream-50 shadow-lg md:mb-2">
-              <LayoutIcon className="w-6 h-6 md:w-7 md:h-7" />
+          <div className="flex items-center md:flex-col md:items-start lg:items-center">
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-paper-text text-cream-50 rounded-2xl flex items-center justify-center shadow-lg transform transition-transform hover:scale-105 duration-300 md:mb-4">
+              <LayoutIcon className="w-5 h-5 md:w-6 md:h-6" />
             </div>
-            <h1 className="ml-3 md:ml-0 lg:block font-serif text-xl font-bold italic tracking-tight hidden md:hidden lg:block">Journal</h1>
+            <h1 className="ml-3 md:ml-0 lg:block font-serif text-xl font-bold italic tracking-tight hidden md:hidden lg:block text-paper-text">Journal</h1>
           </div>
           
           {/* Mobile Calendar Toggle */}
           <button 
             onClick={() => setIsCalendarOpen(true)}
-            className="p-2 rounded-lg hover:bg-cream-200 text-paper-text/60 lg:hidden"
+            className="p-2 rounded-xl hover:bg-cream-200/50 text-paper-text/60 lg:hidden transition-all duration-200"
           >
             <CalendarIcon className="w-6 h-6" />
           </button>
         </div>
 
-        <div className="flex flex-row md:flex-col flex-grow space-x-1 md:space-x-0 md:space-y-2 w-full overflow-x-auto no-scrollbar">
-          <button
-            onClick={() => onViewChange('yearly')}
-            className={`flex-grow md:flex-grow-0 flex flex-col lg:flex-row items-center justify-center lg:justify-start px-2 py-3 md:px-4 rounded-xl transition-all duration-200 group ${
-              currentView === 'yearly' 
-                ? 'bg-cream-200 text-paper-text shadow-sm' 
-                : 'hover:bg-cream-100 text-paper-text/60 hover:text-paper-text'
-            }`}
-          >
-            <Layers className={`w-5 h-5 md:w-6 md:h-6 lg:mr-3 ${currentView === 'yearly' ? 'scale-110' : 'group-hover:scale-110'} transition-transform`} />
-            <span className="text-[9px] lg:text-sm font-medium tracking-wide mt-1 lg:mt-0">Yearly</span>
-          </button>
-
-          <button
-            onClick={() => onViewChange('monthly')}
-            className={`flex-grow md:flex-grow-0 flex flex-col lg:flex-row items-center justify-center lg:justify-start px-2 py-3 md:px-4 rounded-xl transition-all duration-200 group ${
-              currentView === 'monthly' 
-                ? 'bg-cream-200 text-paper-text shadow-sm' 
-                : 'hover:bg-cream-100 text-paper-text/60 hover:text-paper-text'
-            }`}
-          >
-            <CalendarDays className={`w-5 h-5 md:w-6 md:h-6 lg:mr-3 ${currentView === 'monthly' ? 'scale-110' : 'group-hover:scale-110'} transition-transform`} />
-            <span className="text-[9px] lg:text-sm font-medium tracking-wide mt-1 lg:mt-0">Monthly</span>
-          </button>
-
-          <button
-            onClick={() => onViewChange('weekly')}
-            className={`flex-grow md:flex-grow-0 flex flex-col lg:flex-row items-center justify-center lg:justify-start px-2 py-3 md:px-4 rounded-xl transition-all duration-200 group ${
-              currentView === 'weekly' 
-                ? 'bg-cream-200 text-paper-text shadow-sm' 
-                : 'hover:bg-cream-100 text-paper-text/60 hover:text-paper-text'
-            }`}
-          >
-            <LayoutIcon className={`w-5 h-5 md:w-6 md:h-6 lg:mr-3 ${currentView === 'weekly' ? 'scale-110' : 'group-hover:scale-110'} transition-transform`} />
-            <span className="text-[9px] lg:text-sm font-medium tracking-wide mt-1 lg:mt-0">Weekly</span>
-          </button>
-
-          <button
-            onClick={() => onViewChange('daily')}
-            className={`flex-grow md:flex-grow-0 flex flex-col lg:flex-row items-center justify-center lg:justify-start px-2 py-3 md:px-4 rounded-xl transition-all duration-200 group ${
-              currentView === 'daily' 
-                ? 'bg-cream-200 text-paper-text shadow-sm' 
-                : 'hover:bg-cream-100 text-paper-text/60 hover:text-paper-text'
-            }`}
-          >
-            <CalendarIcon className={`w-5 h-5 md:w-6 md:h-6 lg:mr-3 ${currentView === 'daily' ? 'scale-110' : 'group-hover:scale-110'} transition-transform`} />
-            <span className="text-[9px] lg:text-sm font-medium tracking-wide mt-1 lg:mt-0">Daily</span>
-          </button>
-
-          <button
-            onClick={() => onViewChange('history')}
-            className={`flex-grow md:flex-grow-0 flex flex-col lg:flex-row items-center justify-center lg:justify-start px-2 py-3 md:px-4 rounded-xl transition-all duration-200 group ${
-              currentView === 'history' 
-                ? 'bg-cream-200 text-paper-text shadow-sm' 
-                : 'hover:bg-cream-100 text-paper-text/60 hover:text-paper-text'
-            }`}
-          >
-            <Search className={`w-5 h-5 md:w-6 md:h-6 lg:mr-3 ${currentView === 'history' ? 'scale-110' : 'group-hover:scale-110'} transition-transform`} />
-            <span className="text-[9px] lg:text-sm font-medium tracking-wide mt-1 lg:mt-0">Search</span>
-          </button>
+        <div className="flex flex-row md:flex-col flex-grow space-x-2 md:space-x-0 md:space-y-3 w-full overflow-x-auto no-scrollbar pb-2 md:pb-0">
+          {navItems.map((item) => {
+            const isActive = currentView === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => onViewChange(item.id)}
+                className={`flex-grow md:flex-grow-0 flex flex-col lg:flex-row items-center justify-center lg:justify-start px-3 py-3 lg:px-5 rounded-xl transition-all duration-300 group relative overflow-hidden ${
+                  isActive 
+                    ? 'bg-white text-paper-text shadow-paper' 
+                    : 'hover:bg-white/50 text-paper-text/60 hover:text-paper-text'
+                }`}
+              >
+                {isActive && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-paper-text rounded-r-full hidden lg:block animate-in slide-in-from-left duration-300" />
+                )}
+                <item.icon className={`w-5 h-5 md:w-5 md:h-5 lg:mr-3 transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} />
+                <span className={`text-[10px] lg:text-sm font-medium tracking-wide mt-1 lg:mt-0 transition-opacity duration-300 ${isActive ? 'opacity-100 font-semibold' : 'opacity-80'}`}>
+                  {item.label}
+                </span>
+              </button>
+            );
+          })}
           
           {/* Desktop Calendar (Visible on lg screens) */}
-          <div className="pt-8 mt-6 border-t border-paper-border/30 w-full hidden lg:block">
-            <p className="px-4 text-[10px] font-bold text-paper-text/40 uppercase tracking-widest mb-4">Date Selection</p>
-            <Calendar 
-              selectedDate={selectedDate} 
-              onDateSelect={handleDateSelect} 
-              highlightMode={currentView === 'weekly' ? 'week' : 'day'}
-            />
+          <div className="pt-8 mt-6 border-t border-paper-border/30 w-full hidden lg:block opacity-0 lg:opacity-100 transition-opacity duration-700 delay-100">
+            <p className="px-4 text-[10px] font-bold text-paper-text/40 uppercase tracking-[0.2em] mb-4">Date Selection</p>
+            <div className="scale-95 origin-top-left">
+              <Calendar 
+                selectedDate={selectedDate} 
+                onDateSelect={handleDateSelect} 
+                highlightMode={currentView === 'weekly' ? 'week' : 'day'}
+              />
+            </div>
           </div>
         </div>
 
         <div className="mt-auto pt-4 md:pt-8 border-t border-paper-border/30 md:border-t-0 flex flex-row md:flex-col gap-4 items-center w-full justify-between md:justify-center hidden md:flex">
           <div className="pt-4 border-t border-paper-border/30 w-full flex justify-center hidden lg:flex">
-            <button className="p-3 rounded-full hover:bg-cream-200 text-paper-text/60 transition-colors">
-              <Settings className="w-6 h-6" />
+            <button className="p-3 rounded-full hover:bg-cream-200/50 text-paper-text/60 transition-all hover:rotate-45 duration-300">
+              <Settings className="w-5 h-5" />
             </button>
           </div>
         </div>
@@ -129,13 +102,13 @@ const Layout: React.FC<LayoutProps> = ({
 
       {/* Mobile/Tablet Calendar Overlay */}
       {isCalendarOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-paper-text/20 backdrop-blur-sm lg:hidden">
-          <div className="relative w-full max-w-sm bg-cream-100 rounded-3xl shadow-2xl border border-paper-border p-2">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-paper-text/10 backdrop-blur-md lg:hidden animate-in fade-in duration-200">
+          <div className="relative w-full max-w-sm bg-white/90 rounded-[2rem] shadow-paper-deep border border-white/50 p-4">
             <button 
               onClick={() => setIsCalendarOpen(false)}
-              className="absolute -top-12 right-0 p-2 text-cream-50 hover:text-white transition-colors"
+              className="absolute -top-12 right-0 p-2 text-paper-text hover:text-paper-text/70 transition-colors bg-white/50 rounded-full backdrop-blur-sm"
             >
-              <X className="w-8 h-8" />
+              <X className="w-6 h-6" />
             </button>
             <Calendar 
               selectedDate={selectedDate} 
@@ -147,8 +120,8 @@ const Layout: React.FC<LayoutProps> = ({
       )}
 
       {/* Main Content Area */}
-      <main className="flex-grow overflow-y-auto">
-        <div className="max-w-5xl mx-auto h-full">
+      <main className="flex-grow overflow-y-auto bg-cream-100 bg-[radial-gradient(#d1cebd_1px,transparent_1px)] [background-size:24px_24px] md:[background-size:32px_32px]">
+        <div className="max-w-6xl mx-auto h-full px-4 md:px-8 py-6 md:py-10">
           {children}
         </div>
       </main>

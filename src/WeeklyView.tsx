@@ -24,11 +24,11 @@ const TaskItem: React.FC<TaskInputProps> = ({ task, type, onUpdate, onToggle, on
   }, [task.text]);
 
   return (
-    <div className={`flex items-center group ${isLarge ? 'bg-cream-50/50 p-3 rounded-xl border border-transparent hover:border-paper-border/30' : ''} transition-all`}>
-      <button onClick={() => onToggle(type, task.id)} className={isLarge ? "mr-4" : "mr-3"}>
+    <div className={`flex items-center group ${isLarge ? 'bg-white/50 p-4 rounded-xl border border-paper-border/20 shadow-sm hover:shadow-md hover:translate-y-[-1px]' : 'hover:bg-white/30 rounded-lg p-1 -ml-1'} transition-all duration-300`}>
+      <button onClick={() => onToggle(type, task.id)} className={`${isLarge ? "mr-4" : "mr-3"} transition-transform active:scale-90`}>
         {task.completed ? 
-          <CheckCircle2 className={`${isLarge ? 'w-6 h-6' : 'w-5 h-5 text-paper-text/60'} text-paper-text transition-transform active:scale-90`} /> : 
-          <Circle className={`${isLarge ? 'w-6 h-6' : 'w-5 h-5 text-paper-text opacity-20'} hover:opacity-40 transition-all active:scale-90`} />
+          <CheckCircle2 className={`${isLarge ? 'w-6 h-6' : 'w-5 h-5 text-paper-text/60'} text-paper-text transition-all`} /> : 
+          <Circle className={`${isLarge ? 'w-6 h-6' : 'w-5 h-5 text-paper-text opacity-20'} hover:opacity-40 transition-all`} />
         }
       </button>
       <input
@@ -40,11 +40,11 @@ const TaskItem: React.FC<TaskInputProps> = ({ task, type, onUpdate, onToggle, on
             onUpdate(type, task.id, localText);
           }
         }}
-        className={`flex-grow bg-transparent font-serif italic focus:outline-none py-1 transition-all ${isLarge ? 'font-medium' : 'text-sm'} ${task.completed ? 'line-through opacity-40' : 'text-paper-text'}`}
+        className={`flex-grow bg-transparent font-serif italic focus:outline-none py-1 transition-all ${isLarge ? 'font-medium text-lg' : 'text-sm'} ${task.completed ? 'line-through opacity-40 decoration-paper-text/30' : 'text-paper-text'}`}
         placeholder={placeholder}
       />
-      <button onClick={() => onDelete(type, task.id)} className={`opacity-0 group-hover:opacity-30 hover:!opacity-100 ml-2 transition-all p-1`}>
-        <Trash2 className={`${isLarge ? 'w-4 h-4' : 'w-3.5 h-3.5'} text-rose-500`} />
+      <button onClick={() => onDelete(type, task.id)} className={`opacity-0 group-hover:opacity-100 ml-3 transition-all p-1.5 hover:bg-rose-50 rounded-lg text-rose-300 hover:text-rose-500`}>
+        <Trash2 className={`${isLarge ? 'w-4 h-4' : 'w-3.5 h-3.5'}`} />
       </button>
     </div>
   );
@@ -149,15 +149,15 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ selectedDate, onDateSelect }) =
   };
 
   return (
-    <div className="p-6 md:p-10 min-h-screen pb-20">
-      <header className="mb-10 flex justify-between items-end border-b border-paper-border pb-6">
+    <div className="min-h-screen pb-20">
+      <header className="mb-12 flex justify-between items-end border-b border-paper-border pb-6">
         <div>
-          <h1 className="text-4xl font-serif text-paper-text italic font-bold tracking-tight">Weekly Planning</h1>
+          <h1 className="text-4xl md:text-5xl font-serif text-paper-text italic font-bold tracking-tight mb-2">Weekly Planning</h1>
           <button 
             onClick={() => setIsCalendarOpen(true)}
-            className="text-paper-text opacity-60 flex items-center mt-2 font-medium hover:opacity-100 hover:bg-cream-200 px-2 py-1 rounded-lg transition-all -ml-2 font-serif italic text-2xl"
+            className="text-paper-text/60 flex items-center mt-2 font-medium hover:text-paper-text hover:bg-white/40 px-3 py-1.5 rounded-full transition-all -ml-2 font-serif italic text-xl md:text-2xl group"
           >
-            <CalendarIcon className="w-4 h-4 mr-2" />
+            <CalendarIcon className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
             Week {weekNumber}, {yearId}
           </button>
         </div>
@@ -165,28 +165,31 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ selectedDate, onDateSelect }) =
 
       {/* Date Picker Modal */}
       {isCalendarOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-paper-text/20 backdrop-blur-sm" onClick={() => setIsCalendarOpen(false)}>
-          <div className="relative w-full max-w-sm bg-cream-100 rounded-3xl shadow-2xl border border-paper-border p-2" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-paper-text/10 backdrop-blur-md" onClick={() => setIsCalendarOpen(false)}>
+          <div className="relative w-full max-w-sm bg-white/90 rounded-[2rem] shadow-paper-deep border border-white/50 p-4" onClick={e => e.stopPropagation()}>
             <button 
               onClick={() => setIsCalendarOpen(false)}
-              className="absolute -top-12 right-0 p-2 text-cream-50 hover:text-white transition-colors"
+              className="absolute -top-12 right-0 p-2 text-paper-text hover:text-paper-text/70 transition-colors bg-white/50 rounded-full backdrop-blur-sm"
             >
-              <X className="w-8 h-8" />
+              <X className="w-6 h-6" />
             </button>
             <Calendar selectedDate={selectedDate} onDateSelect={handleDateSelect} highlightMode="week" />
           </div>
         </div>
       )}
 
-      <div className="space-y-10">
+      <div className="space-y-12">
         {/* Yearly/Monthly Action Plan Connection */}
-        <section className="bg-cream-200/20 py-6 px-8 rounded-3xl border border-dashed border-paper-border/60">
-          <div className="flex items-center mb-4">
-            <Layout className="w-4 h-4 mr-2 text-paper-text/60" />
-            <h2 className="text-[11px] uppercase tracking-[0.2em] text-paper-text opacity-70 font-bold">This Week's Actions for Monthly Goals</h2>
+        <section className="bg-white/40 backdrop-blur-sm py-8 px-6 md:px-10 rounded-[2rem] border border-paper-border/30 shadow-paper relative overflow-hidden group">
+          <div className="absolute top-0 left-0 w-1.5 h-full bg-paper-text/5 transition-all duration-500 group-hover:bg-paper-text/10" />
+          <div className="flex items-center mb-6">
+            <div className="p-2 bg-white/50 rounded-lg mr-3 shadow-sm">
+              <Layout className="w-4 h-4 text-paper-text/70" />
+            </div>
+            <h2 className="text-[10px] md:text-xs font-bold text-paper-text/70 tracking-widest">月間目標に向けた今週のアクション</h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
             {Array.from({ length: 5 }).map((_, i) => {
               const yearlyGoal = yearlyEntry?.goals[i];
               const monthlyAction = yearlyGoal?.monthlyActions?.[monthNum];
@@ -197,19 +200,19 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ selectedDate, onDateSelect }) =
               const isWeeklyCompleted = typeof weeklyActionObj === 'object' ? weeklyActionObj.completed : false;
 
               return (
-                <div key={i} className="bg-white/60 p-4 rounded-2xl border border-paper-border/20 shadow-sm flex flex-col">
-                  <div className="flex flex-col mb-2">
-                    <span className="text-[8px] font-bold text-paper-text/30 uppercase tracking-widest mb-0.5">Goal {i + 1}</span>
-                    <span className="text-[10px] font-serif italic font-bold text-paper-text/60 line-clamp-1" title={actionText || '今月のアクション未設定'}>
-                      {actionText || `(今月のアクション未設定)`}
+                <div key={i} className="bg-white/60 p-5 rounded-2xl border border-white/50 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col hover:-translate-y-1 group/card">
+                  <div className="flex flex-col mb-4">
+                    <span className="text-[9px] font-bold text-paper-text/30 uppercase tracking-widest mb-1">Goal {i + 1}</span>
+                    <span className="text-xs font-serif italic font-medium text-paper-text/70 line-clamp-2 min-h-[2.5em]" title={actionText || '今月のアクション未設定'}>
+                      {actionText || <span className="text-paper-text/20">(今月のアクション未設定)</span>}
                     </span>
                   </div>
-                  <div className="mt-auto pt-2 border-t border-paper-border/10">
-                    <div className="flex items-start gap-2">
-                      <button onClick={() => toggleWeeklyGoalAction(i)} className="mt-1">
+                  <div className="mt-auto pt-3 border-t border-paper-border/10">
+                    <div className="flex items-start gap-3">
+                      <button onClick={() => toggleWeeklyGoalAction(i)} className="mt-1 transition-transform active:scale-90">
                         {isWeeklyCompleted ? 
-                          <CheckCircle2 className="w-3.5 h-3.5 text-paper-text/60" /> : 
-                          <Circle className="w-3.5 h-3.5 text-paper-text/20 hover:text-paper-text/40" />
+                          <CheckCircle2 className="w-4 h-4 text-paper-text/60" /> : 
+                          <Circle className="w-4 h-4 text-paper-text/20 group-hover/card:text-paper-text/40 transition-colors" />
                         }
                       </button>
                       <EditableField
@@ -217,7 +220,7 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ selectedDate, onDateSelect }) =
                         value={weeklyText}
                         onSave={(val) => updateWeeklyGoalAction(i, val)}
                         placeholder="今週やることは？"
-                        className={`text-[11px] leading-snug font-serif italic flex-grow bg-transparent focus:outline-none min-h-[40px] placeholder:text-paper-text/20 ${isWeeklyCompleted ? 'line-through opacity-40' : ''}`}
+                        className={`text-xs leading-relaxed font-serif italic flex-grow bg-transparent focus:outline-none min-h-[40px] placeholder:text-paper-text/20 ${isWeeklyCompleted ? 'line-through opacity-40 decoration-paper-text/20' : ''}`}
                       />
                     </div>
                   </div>
@@ -227,35 +230,35 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ selectedDate, onDateSelect }) =
           </div>
         </section>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        <div className="lg:col-span-4 space-y-10">
-          <section className="bg-cream-50 p-6 rounded-2xl border border-paper-border shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-1.5 h-full bg-paper-text/20" />
-            <h2 className="text-[11px] uppercase tracking-[0.2em] text-paper-text/50 mb-4 font-bold">Intention for the week</h2>
-            <textarea
-              value={intention}
-              onChange={(e) => setIntention(e.target.value)}
-              onBlur={() => {
-                if (entry?.intention !== intention) {
-                  saveEntry({ intention });
-                }
-              }}
-              placeholder="今週の意図を書き込みましょう..."
-              className="w-full bg-cream-100/50 border border-paper-border/20 rounded-xl p-4 focus:outline-none focus:ring-1 focus:ring-paper-border/50 min-h-[150px] text-sm font-serif italic shadow-inner transition-all placeholder:italic"
-            />
-          </section>
-        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
+          <div className="lg:col-span-4 space-y-8">
+            <section className="paper-card p-6 md:p-8 relative overflow-hidden h-full">
+              <div className="absolute top-0 left-0 w-1 h-full bg-paper-text/10" />
+              <h2 className="text-[10px] md:text-xs font-bold text-paper-text/50 mb-6 tracking-widest">今週の意図</h2>
+              <textarea
+                value={intention}
+                onChange={(e) => setIntention(e.target.value)}
+                onBlur={() => {
+                  if (entry?.intention !== intention) {
+                    saveEntry({ intention });
+                  }
+                }}
+                placeholder="今週の意図を書き込みましょう..."
+                className="w-full bg-white/20 border-none rounded-xl p-4 focus:ring-0 min-h-[200px] text-base font-serif italic shadow-inner transition-all placeholder:text-paper-text/20 resize-none leading-relaxed"
+              />
+            </section>
+          </div>
 
-          <div className="lg:col-span-8 space-y-10">
-            <section className="bg-white/40 p-6 rounded-2xl border border-paper-border/40 shadow-sm">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-sm uppercase tracking-[0.1em] text-paper-text opacity-70 font-bold flex items-center">
+          <div className="lg:col-span-8 space-y-8 md:space-y-12">
+            <section className="paper-card p-6 md:p-8 shadow-paper-hover">
+              <div className="flex justify-between items-center mb-8">
+                <h2 className="text-xs font-bold text-paper-text/70 flex items-center tracking-widest">
                   <Target className="w-4 h-4 mr-2 text-paper-text" />
-                  Weekly Priorities
+                  今週の最優先事項
                 </h2>
                 <button 
                   onClick={() => addTask('mostImportantTasks')} 
-                  className="w-8 h-8 flex items-center justify-center bg-paper-text text-cream-50 rounded-full hover:scale-105 active:scale-95 transition-all shadow-md"
+                  className="w-8 h-8 flex items-center justify-center bg-paper-text text-cream-50 rounded-full hover:scale-110 active:scale-95 transition-all shadow-md hover:shadow-lg"
                 >
                   <Plus className="w-5 h-5" />
                 </button>
@@ -275,25 +278,25 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ selectedDate, onDateSelect }) =
                   />
                 ))}
                 {(!entry?.mostImportantTasks || entry.mostImportantTasks.length === 0) && (
-                  <div className="py-8 text-center">
-                    <p className="text-paper-text/30 text-sm">タスクを追加して今週を始めましょう</p>
+                  <div className="py-12 text-center bg-white/30 rounded-2xl border border-dashed border-paper-border/30">
+                    <p className="text-paper-text/30 text-sm font-serif italic">タスクを追加して今週を始めましょう</p>
                   </div>
                 )}
               </div>
             </section>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <section className="bg-white/40 p-6 rounded-2xl border border-paper-border/40 shadow-sm">
-                <div className="flex justify-between items-center mb-6 border-b border-paper-border/10 pb-3">
-                  <h2 className="text-xs uppercase tracking-[0.1em] text-paper-text opacity-60 font-bold flex items-center">
+              <section className="paper-card p-6 md:p-8">
+                <div className="flex justify-between items-center mb-6 border-b border-paper-border/10 pb-4">
+                  <h2 className="text-[10px] font-bold text-paper-text/50 flex items-center tracking-widest">
                     <ListTodo className="w-3.5 h-3.5 mr-2" />
-                    Secondary Tasks
+                    重要タスク
                   </h2>
-                  <button onClick={() => addTask('secondaryTasks')} className="text-paper-text/40 hover:text-paper-text transition-colors">
-                    <Plus className="w-5 h-5" />
+                  <button onClick={() => addTask('secondaryTasks')} className="text-paper-text/40 hover:text-paper-text transition-colors bg-white/50 p-1.5 rounded-lg hover:bg-white">
+                    <Plus className="w-4 h-4" />
                   </button>
                 </div>
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {(entry?.secondaryTasks || []).map((task) => (
                     <TaskItem
                       key={task.id}
@@ -308,17 +311,17 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ selectedDate, onDateSelect }) =
                 </div>
               </section>
 
-              <section className="bg-white/40 p-6 rounded-2xl border border-paper-border/40 shadow-sm">
-                <div className="flex justify-between items-center mb-6 border-b border-paper-border/10 pb-3">
-                  <h2 className="text-xs uppercase tracking-[0.1em] text-paper-text opacity-60 font-bold flex items-center">
+              <section className="paper-card p-6 md:p-8">
+                <div className="flex justify-between items-center mb-6 border-b border-paper-border/10 pb-4">
+                  <h2 className="text-[10px] font-bold text-paper-text/50 flex items-center tracking-widest">
                     <Target className="w-3.5 h-3.5 mr-2" />
-                    Additional Weekly Goals
+                    その他の目標
                   </h2>
-                  <button onClick={() => addTask('additionalTasks')} className="w-7 h-7 flex items-center justify-center bg-paper-text text-cream-50 rounded-full hover:scale-105 active:scale-95 transition-all shadow-md">
-                    <Plus className="w-4 h-4" />
+                  <button onClick={() => addTask('additionalTasks')} className="w-7 h-7 flex items-center justify-center bg-paper-text text-cream-50 rounded-full hover:scale-110 active:scale-95 transition-all shadow-md">
+                    <Plus className="w-3.5 h-3.5" />
                   </button>
                 </div>
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {(entry?.additionalTasks || []).map((task) => (
                     <TaskItem
                       key={task.id}
@@ -331,7 +334,7 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ selectedDate, onDateSelect }) =
                     />
                   ))}
                   {(!entry?.additionalTasks || entry.additionalTasks.length === 0) && (
-                    <p className="text-center py-4 text-paper-text/30 text-[10px]">今週独自の目標があれば追加しましょう</p>
+                    <p className="text-center py-8 text-paper-text/20 text-[10px]">今週独自の目標を追加</p>
                   )}
                 </div>
               </section>
