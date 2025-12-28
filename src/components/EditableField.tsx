@@ -24,7 +24,9 @@ const EditableField: React.FC<EditableFieldProps> = ({
   }, [value]);
 
   const handleBlur = () => {
-    if (localValue !== value) {
+    // onChangeが提供されている場合（リアルタイム更新時）は、valueがlocalValueに追従しているため
+    // 単純な比較では変更を検知できない。そのため、常にonSaveを呼び出し、保存の判断は親に委ねる。
+    if (localValue !== value || onChange) {
       onSave(localValue);
     }
   };

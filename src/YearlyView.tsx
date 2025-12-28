@@ -31,6 +31,15 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
   
   const entry = useLiveQuery(() => db.yearlyEntries.get(yearId), [yearId]);
 
+  // entryがロードされるまではローディング表示
+  if (entry === undefined) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-cream-100">
+        <div className="text-paper-text/40 animate-pulse text-lg font-serif italic tracking-widest">Loading...</div>
+      </div>
+    );
+  }
+
   // localGoalsの最新値を保持するRef
   const localGoalsRef = useRef(localGoals);
   useEffect(() => {
@@ -89,15 +98,12 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
   }, [entry, yearId]);
 
   const saveEntry = async (updates: Partial<YearlyEntry>) => {
+    if (entry === undefined || yearId !== loadedYearId) return;
+
     const currentEntry = entry || {
       id: yearId,
       theme: '',
-      goals: localGoals.length > 0 ? localGoals : Array.from({ length: 5 }).map(() => ({
-        id: Math.random().toString(36).substring(2),
-        text: '',
-        completed: false,
-        monthlyActions: {}
-      })),
+      goals: localGoals,
       reflection: '',
       updatedAt: Date.now(),
     };
@@ -122,6 +128,13 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
 
   // DB保存用の関数（Blur時に呼ばれる）
   const handleGoalTextSave = async (index: number, text: string) => {
+    // ロード中の年と異なる場合は保存しない（年度切り替え時の誤保存防止）
+    if (yearId !== loadedYearId) return;
+
+    // DBの値と比較して変更がなければ保存しない
+    const dbGoal = entry?.goals?.[index];
+    if (dbGoal && dbGoal.text === text) return;
+
     const goals = [...localGoals];
     if (goals[index]) {
       goals[index].text = text;

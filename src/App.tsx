@@ -19,7 +19,7 @@ function App() {
       case 'monthly':
         return <MonthlyView selectedDate={selectedDate} onDateSelect={setSelectedDate} />
       case 'yearly':
-        return <YearlyView selectedDate={selectedDate} onDateSelect={setSelectedDate} />
+        return <YearlyView key={selectedDate.getFullYear()} selectedDate={selectedDate} onDateSelect={setSelectedDate} />
       case 'history':
         return <HistoryView onEntrySelect={(date, view) => { 
           setSelectedDate(date); 
