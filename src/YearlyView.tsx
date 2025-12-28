@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, type YearlyEntry, type YearlyGoal } from './db';
 import { Sparkles, Target, BookOpen, CheckCircle2, Circle, X, Calendar as CalendarIcon, ArrowRight } from 'lucide-react';
@@ -31,6 +31,12 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
   
   const entry = useLiveQuery(() => db.yearlyEntries.get(yearId), [yearId]);
 
+  // localGoalsの最新値を保持するRef
+  const localGoalsRef = useRef(localGoals);
+  useEffect(() => {
+    localGoalsRef.current = localGoals;
+  }, [localGoals]);
+
   // DBのデータが変わった時、または年が変わった時にローカル状態を同期
   useEffect(() => {
     if (entry && entry.goals && entry.goals.length >= 5) {
@@ -41,14 +47,14 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
         // 編集中（フォーカスがある時）は外部からの同期をスキップして、入力の邪魔をしない
         if (!document.activeElement?.closest('textarea')) {
            const dbGoalsJson = JSON.stringify(entry.goals);
-           const localGoalsJson = JSON.stringify(localGoals);
+           const localGoalsJson = JSON.stringify(localGoalsRef.current);
            if (dbGoalsJson !== localGoalsJson) {
               setLocalGoals(JSON.parse(dbGoalsJson));
            }
         }
       }
     }
-  }, [entry, yearId, loadedYearId, localGoals]);
+  }, [entry, yearId, loadedYearId]); // localGoals を依存配列から外す
 
   // 目標が5つ未満の場合、自動的に補完する
   useEffect(() => {
