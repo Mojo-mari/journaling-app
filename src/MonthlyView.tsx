@@ -175,7 +175,7 @@ const MonthlyView: React.FC<MonthlyViewProps> = ({ selectedDate, onDateSelect })
                 value={entry?.intention || ''}
                 onSave={(val) => saveEntry({ intention: val })}
                 placeholder="今月の意図やテーマを入力..."
-                className="w-full bg-white/40 border-none rounded-xl p-5 focus:ring-0 text-base font-serif shadow-inner transition-all placeholder:text-paper-text/20 min-h-[150px] resize-none leading-relaxed"
+                className="w-full bg-white/40 border-none rounded-xl p-5 focus:ring-0 text-base font-serif italic shadow-inner transition-all placeholder:text-paper-text/20 min-h-[150px] resize-none leading-relaxed"
               />
             </section>
 
@@ -230,7 +230,7 @@ const MonthlyView: React.FC<MonthlyViewProps> = ({ selectedDate, onDateSelect })
               value={entry?.reflection || ''}
               onSave={(val) => saveEntry({ reflection: val })}
               placeholder="今月の振り返り、学んだこと、次月への課題など..."
-              className="w-full bg-white/30 border-none rounded-2xl p-6 focus:ring-0 focus:bg-white/50 text-base font-serif shadow-inner transition-all placeholder:text-paper-text/20 min-h-[500px] resize-none leading-loose"
+              className="w-full bg-white/30 border-none rounded-2xl p-6 focus:ring-0 focus:bg-white/50 text-base font-serif italic shadow-inner transition-all placeholder:text-paper-text/20 min-h-[500px] resize-none leading-loose"
             />
           </section>
         </div>

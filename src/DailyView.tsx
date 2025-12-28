@@ -225,7 +225,7 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
                     value={entry?.gratitude?.[i] || ''}
                     onSave={(val) => updateGratitude(i, val)}
                     placeholder="感謝していることを書きましょう..."
-                    className="paper-input flex-grow text-base"
+                    className="paper-input flex-grow text-base font-serif italic"
                   />
                 </div>
               ))}
@@ -242,7 +242,7 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
                 </h2>
                 <div className="space-y-3 pl-2">
                   {weeklyEntry.mostImportantTasks.slice(0, 3).map((task) => (
-                    <div key={task.id} className="flex items-center gap-3 text-sm font-serif text-paper-text/70">
+                    <div key={task.id} className="flex items-center gap-3 text-sm font-serif italic text-paper-text/70">
                       <div className={`w-1.5 h-1.5 rounded-full ring-2 ring-paper-text/5 ${task.completed ? 'bg-paper-text/30' : 'bg-paper-text/60'}`} />
                       <span className={task.completed ? 'line-through opacity-50 decoration-paper-text/30' : ''}>{task.text || '(未入力)'}</span>
                     </div>
@@ -266,7 +266,7 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
                       if (!actionText) return null;
                       
                       return (
-                        <div key={index} className="flex items-start gap-3 text-sm font-serif text-paper-text/70">
+                        <div key={index} className="flex items-start gap-3 text-sm font-serif italic text-paper-text/70">
                            <div className={`w-1.5 h-1.5 mt-2 rounded-full ring-2 ring-paper-text/5 ${isCompleted ? 'bg-paper-text/30' : 'bg-paper-text/60'}`} />
                           <span className={`leading-relaxed ${isCompleted ? 'line-through opacity-50 decoration-paper-text/30' : ''}`}>{actionText}</span>
                         </div>
@@ -355,7 +355,7 @@ const DailyView: React.FC<DailyViewProps> = ({ selectedDate, onDateSelect }) => 
                       value={task.text || ''}
                       onSave={(val) => updateTask('secondaryTasks', task.id, { text: val })}
                       placeholder="タスクを入力..."
-                      className={`paper-input flex-grow text-sm ${task.completed ? 'line-through opacity-40 decoration-paper-text/20' : ''}`}
+                      className={`paper-input flex-grow text-sm font-serif italic ${task.completed ? 'line-through opacity-40 decoration-paper-text/20' : ''}`}
                     />
                   </div>
                 ))}

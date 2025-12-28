@@ -251,7 +251,7 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
                     onSave={(val) => handleGoalTextSave(i, val)}
                     onChange={(val) => handleGoalTextChange(i, val)} // ローカル状態のみ更新（超高速）
                     placeholder={`${i + 1}つ目の目標を入力...`}
-                    className={`bg-transparent focus:outline-none text-base font-serif font-medium min-h-[120px] leading-relaxed resize-none ${goal?.completed ? 'line-through opacity-40' : ''}`}
+                    className={`bg-transparent focus:outline-none text-base font-serif font-medium italic min-h-[120px] leading-relaxed resize-none ${goal?.completed ? 'line-through opacity-40' : ''}`}
                   />
                 </div>
               );
@@ -318,7 +318,7 @@ const YearlyView: React.FC<YearlyViewProps> = ({ selectedDate, onDateSelect }) =
                                     value={actionText}
                                     onSave={(val) => updateMonthlyAction(goalIndex, monthIndex, val)}
                                     placeholder="..."
-                                    className={`w-full h-24 bg-transparent font-serif focus:bg-white/60 focus:shadow-sm border-none rounded-lg p-2 text-[11px] leading-relaxed transition-all resize-none placeholder:text-paper-text/5 ${isCompleted ? 'line-through opacity-30' : ''}`}
+                                    className={`w-full h-24 bg-transparent font-serif italic focus:bg-white/60 focus:shadow-sm border-none rounded-lg p-2 text-[11px] leading-relaxed transition-all resize-none placeholder:text-paper-text/5 ${isCompleted ? 'line-through opacity-30' : ''}`}
                                   />
                               </div>
                             </td>
