@@ -1,19 +1,19 @@
 import React from 'react';
-import { 
-  format, 
-  addMonths, 
-  subMonths, 
-  startOfMonth, 
-  endOfMonth, 
-  startOfWeek, 
-  endOfWeek, 
-  isSameMonth, 
-  isSameDay, 
+import {
+  format,
+  addMonths,
+  subMonths,
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  isSameMonth,
+  isSameDay,
   eachDayOfInterval,
   isToday,
   isSameWeek
 } from 'date-fns';
-import { ja } from 'date-fns/locale';
+import { enUS } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface CalendarProps {
@@ -25,8 +25,8 @@ interface CalendarProps {
 const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect, highlightMode = 'day' }) => {
   const [currentMonth, setCurrentMonth] = React.useState(new Date(selectedDate));
   const [viewMode, setViewMode] = React.useState<'days' | 'months' | 'years'>(
-    highlightMode === 'year' ? 'years' : 
-    highlightMode === 'month' ? 'months' : 'days'
+    highlightMode === 'year' ? 'years' :
+      highlightMode === 'month' ? 'months' : 'days'
   );
 
   const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
@@ -43,33 +43,33 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect, highlig
   const startDate = startOfWeek(monthStart, { weekStartsOn: 1 });
   const endDate = endOfWeek(monthEnd, { weekStartsOn: 1 });
 
-  const dateFormat = "yyyy年 MMMM";
+  const dateFormat = "MMMM yyyy";
   const allDays = eachDayOfInterval({ start: startDate, end: endDate });
 
   const months = [
-    '1月', '2月', '3月', '4月', '5月', '6月', 
-    '7月', '8月', '9月', '10月', '11月', '12月'
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
   ];
 
   if (viewMode === 'years') {
     return (
-      <div className="bg-cream-50 p-8 rounded-[2rem] border border-paper-border shadow-xl">
+      <div className="bg-white p-8 rounded-[2rem] border border-paper-border/20 shadow-2xl">
         <header className="flex justify-between items-center mb-8 border-b border-paper-border/10 pb-4">
-          <span className="font-serif italic font-bold text-paper-text/40 text-xs tracking-widest uppercase">
+          <span className="font-serif italic font-bold text-paper-text/40 text-[10px] tracking-[0.2em] uppercase">
             Select Year
           </span>
-          <div className="flex gap-3">
-            <button 
-              onClick={() => setCurrentMonth(subMonths(currentMonth, 15 * 12))} 
-              className="p-2 hover:bg-cream-200 rounded-full transition-all text-paper-text/40 hover:text-paper-text"
+          <div className="flex gap-1">
+            <button
+              onClick={() => setCurrentMonth(subMonths(currentMonth, 15 * 12))}
+              className="p-2 hover:bg-cream-100 rounded-full transition-all text-paper-text/40 hover:text-paper-text"
             >
-              <ChevronLeft className="w-5 h-5" />
+              <ChevronLeft className="w-4 h-4" />
             </button>
-            <button 
-              onClick={() => setCurrentMonth(addMonths(currentMonth, 15 * 12))} 
-              className="p-2 hover:bg-cream-200 rounded-full transition-all text-paper-text/40 hover:text-paper-text"
+            <button
+              onClick={() => setCurrentMonth(addMonths(currentMonth, 15 * 12))}
+              className="p-2 hover:bg-cream-100 rounded-full transition-all text-paper-text/40 hover:text-paper-text"
             >
-              <ChevronRight className="w-5 h-5" />
+              <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         </header>
@@ -90,10 +90,10 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect, highlig
                 }}
                 className={`
                   relative py-4 rounded-2xl transition-all duration-300 flex flex-col items-center justify-center
-                  ${isSelected 
-                    ? 'bg-rose-100 text-rose-900 shadow-sm scale-110 z-20 border border-rose-200' 
-                    : 'hover:bg-cream-200 text-paper-text/60 hover:text-paper-text'}
-                  ${isCenter && !isSelected ? 'font-bold text-paper-text/80 ring-1 ring-paper-border/20 bg-cream-100/50' : ''}
+                  ${isSelected
+                    ? 'bg-rose-50 text-rose-900 scale-110 z-20 border border-rose-100'
+                    : 'hover:bg-cream-50 text-paper-text/60 hover:text-paper-text'}
+                  ${isCenter && !isSelected ? 'font-bold text-paper-text/80 ring-1 ring-paper-border/20 bg-cream-50/50' : ''}
                 `}
               >
                 <span className={`
@@ -116,20 +116,20 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect, highlig
 
   if (viewMode === 'months') {
     return (
-      <div className="bg-cream-50 p-8 rounded-[2rem] border border-paper-border shadow-xl">
+      <div className="bg-white p-8 rounded-[2rem] border border-paper-border/20 shadow-2xl">
         <header className="flex justify-between items-center mb-8 border-b border-paper-border/10 pb-4">
-          <button 
+          <button
             onClick={() => setViewMode('years')}
-            className="font-serif italic font-bold text-paper-text/80 hover:bg-cream-200 px-3 py-1 rounded-xl transition-all text-xl"
+            className="font-serif italic font-bold text-paper-text/80 hover:bg-cream-50 px-3 py-1 rounded-xl transition-all text-xl"
           >
-            {format(currentMonth, 'yyyy年')}
+            {format(currentMonth, 'yyyy')}
           </button>
-          <div className="flex gap-2">
-            <button onClick={prevYear} className="p-2 hover:bg-cream-200 rounded-full transition-colors text-paper-text/40 hover:text-paper-text">
-              <ChevronLeft className="w-5 h-5" />
+          <div className="flex gap-1">
+            <button onClick={prevYear} className="p-2 hover:bg-cream-50 rounded-full transition-colors text-paper-text/40 hover:text-paper-text">
+              <ChevronLeft className="w-4 h-4" />
             </button>
-            <button onClick={nextYear} className="p-2 hover:bg-cream-200 rounded-full transition-colors text-paper-text/40 hover:text-paper-text">
-              <ChevronRight className="w-5 h-5" />
+            <button onClick={nextYear} className="p-2 hover:bg-cream-50 rounded-full transition-colors text-paper-text/40 hover:text-paper-text">
+              <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         </header>
@@ -148,7 +148,7 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect, highlig
                 }}
                 className={`
                   py-5 rounded-2xl text-sm font-medium transition-all
-                  ${isSelected ? 'bg-rose-100 text-rose-900 shadow-sm scale-105 border border-rose-200' : 'hover:bg-cream-200 text-paper-text/70'}
+                  ${isSelected ? 'bg-rose-50 text-rose-900 scale-105 border border-rose-100' : 'hover:bg-cream-50 text-paper-text/70'}
                 `}
               >
                 {m}
@@ -161,27 +161,27 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect, highlig
   }
 
   return (
-    <div className="bg-cream-50 p-6 rounded-[2rem] border border-paper-border shadow-xl">
-      <header className="flex justify-between items-center mb-6">
-        <button 
+    <div className="bg-white p-6 rounded-[2rem] border border-paper-border/20 shadow-2xl">
+      <header className="flex justify-between items-center mb-6 px-2">
+        <button
           onClick={() => setViewMode('months')}
-          className="font-serif italic font-bold text-paper-text/80 hover:bg-cream-200 px-3 py-1 rounded-xl transition-all"
+          className="font-serif italic font-bold text-paper-text/80 hover:bg-cream-50 px-3 py-1 rounded-xl transition-all text-lg"
         >
-          {format(currentMonth, dateFormat, { locale: ja })}
+          {format(currentMonth, dateFormat, { locale: enUS })}
         </button>
-        <div className="flex gap-2">
-          <button onClick={prevMonth} className="p-1.5 hover:bg-cream-200 rounded-full transition-colors text-paper-text/60">
-            <ChevronLeft className="w-5 h-5" />
+        <div className="flex gap-1">
+          <button onClick={prevMonth} className="p-1.5 hover:bg-cream-50 rounded-full transition-colors text-paper-text/40">
+            <ChevronLeft className="w-4 h-4" />
           </button>
-          <button onClick={nextMonth} className="p-1.5 hover:bg-cream-200 rounded-full transition-colors text-paper-text/60">
-            <ChevronRight className="w-5 h-5" />
+          <button onClick={nextMonth} className="p-1.5 hover:bg-cream-50 rounded-full transition-colors text-paper-text/40">
+            <ChevronRight className="w-4 h-4" />
           </button>
         </div>
       </header>
 
-      <div className="grid grid-cols-7 gap-1 mb-2">
-        {['月', '火', '水', '木', '金', '土', '日'].map((d) => (
-          <div key={d} className="text-center text-[10px] font-bold text-paper-text/30 uppercase tracking-widest py-2">
+      <div className="grid grid-cols-7 gap-1 mb-4">
+        {['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'].map((d) => (
+          <div key={d} className="text-center text-[9px] font-bold text-paper-text/40 tracking-[0.15em] py-2">
             {d}
           </div>
         ))}
@@ -196,27 +196,27 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect, highlig
           const dayOfWeek = date.getDay(); // 0: Sun, 1: Mon, ...
 
           return (
-            <div key={date.toISOString()} className="relative aspect-square">
+            <div key={date.toISOString()} className="relative aspect-square flex items-center justify-center">
               {isInSelectedWeek && (
-                <div className={`absolute inset-y-1 -inset-x-0.5 bg-paper-text/10 z-0
-                  ${dayOfWeek === 1 ? 'rounded-l-lg ml-1' : ''}
-                  ${dayOfWeek === 0 ? 'rounded-r-lg mr-1' : ''}
+                <div className={`absolute inset-y-1 -inset-x-0.5 bg-paper-text/5 z-0
+                  ${dayOfWeek === 1 ? 'rounded-l-full ml-1' : ''}
+                  ${dayOfWeek === 0 ? 'rounded-r-full mr-1' : ''}
                 `} />
               )}
               <button
                 onClick={() => onDateSelect(date)}
                 className={`
-                  w-full h-full flex flex-col items-center justify-center text-sm transition-all relative z-10
-                  ${!isCurrentMonth ? 'text-paper-text/10' : 'text-paper-text/70'}
-                  ${isSelected ? 'bg-rose-100 text-rose-900 shadow-sm scale-105 rounded-xl border border-rose-200' : 
-                    isInSelectedWeek ? 'text-paper-text font-bold' : 'hover:bg-cream-200 rounded-xl'}
+                  w-10 h-10 flex flex-col items-center justify-center text-sm transition-all relative z-10
+                  ${!isCurrentMonth ? 'text-paper-text/10' : 'text-paper-text/60'}
+                  ${isSelected ? 'bg-rose-100 text-rose-900 rounded-full' :
+                    isInSelectedWeek ? 'text-paper-text font-bold' : 'hover:bg-cream-50 rounded-full'}
                 `}
               >
                 <span className={`font-medium ${isTodayDate && !isSelected ? 'text-rose-600 font-bold' : ''}`}>
                   {format(date, 'd')}
                 </span>
                 {isTodayDate && !isSelected && (
-                  <div className="absolute bottom-1 w-1 h-1 bg-rose-400 rounded-full" />
+                  <div className="absolute bottom-1.5 w-1 h-1 bg-rose-400 rounded-full" />
                 )}
               </button>
             </div>

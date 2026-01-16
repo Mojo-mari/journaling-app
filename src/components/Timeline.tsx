@@ -47,10 +47,23 @@ const Timeline: React.FC<TimelineProps> = ({ events, onSave, selectedDate }) => 
   const containerRef = useRef<HTMLDivElement>(null);
 
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID?.trim();
+  const isValidClientId = clientId && clientId.includes('.apps.googleusercontent.com');
 
   useEffect(() => {
-    initGapi(clientId);
-  }, [clientId]);
+    // クライアントIDがない、または形式が不正な場合は初期化をスキップ
+    if (!isValidClientId) {
+      if (clientId && clientId !== 'placeholder-client-id') {
+        console.warn('Invalid Google Client ID format. It should end with .apps.googleusercontent.com');
+      }
+      return;
+    }
+
+    // エラーハンドリングを追加
+    initGapi(clientId).catch((error) => {
+      console.error('Failed to initialize GAPI:', error);
+      // エラーが発生してもアプリは継続できるようにする
+    });
+  }, [clientId, isValidClientId]);
 
   // 編集開始時にテキストをセット
   useEffect(() => {
@@ -68,7 +81,7 @@ const Timeline: React.FC<TimelineProps> = ({ events, onSave, selectedDate }) => 
       try {
         // GAPIの初期化を確実に確認
         await initGapi(clientId);
-        
+
         // gapiにトークンを設定
         if ((window as any).gapi && (window as any).gapi.client) {
           (window as any).gapi.client.setToken({
@@ -76,7 +89,7 @@ const Timeline: React.FC<TimelineProps> = ({ events, onSave, selectedDate }) => 
           });
 
           const googleEvents = await listUpcomingEvents(selectedDate);
-          
+
           const newTimelineEvents: TimelineEvent[] = googleEvents.map((ge: any, index: number) => ({
             id: `google-${ge.id}`,
             startTime: formatTime(ge.start.dateTime || ge.start.date),
@@ -91,14 +104,14 @@ const Timeline: React.FC<TimelineProps> = ({ events, onSave, selectedDate }) => 
         }
       } catch (error) {
         console.error('Sync error:', error);
-        alert("Googleカレンダーの同期中にエラーが発生しました。Google Cloud Consoleでの「承認済みの JavaScript 生成元」の設定を確認してください。");
+        alert("An error occurred during Google Calendar synchronization. Please check your 'Authorized JavaScript origins' in the Google Cloud Console.");
       } finally {
         setIsSyncing(false);
       }
     },
     onError: (error) => {
       console.error('Login Failed:', error);
-      alert("ログインに失敗しました。クライアントIDが正しいか、またはブラウザのポップアップブロックを確認してください。");
+      alert("Login failed. Please check your Client ID or browser popup blocker.");
     },
     scope: 'openid email profile https://www.googleapis.com/auth/calendar.events.readonly',
   });
@@ -118,7 +131,7 @@ const Timeline: React.FC<TimelineProps> = ({ events, onSave, selectedDate }) => 
   const positionedEvents = React.useMemo(() => {
     const sorted = [...events].sort((a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime));
     const positioned: (TimelineEvent & { leftOffset: number; widthPct: number })[] = [];
-    
+
     // 予定をグループ化（重なっているもの同士）
     const groups: TimelineEvent[][] = [];
     let currentGroup: TimelineEvent[] = [];
@@ -172,10 +185,10 @@ const Timeline: React.FC<TimelineProps> = ({ events, onSave, selectedDate }) => 
     if (editingEventId) return;
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
-    
+
     const y = e.clientY - rect.top + containerRef.current!.scrollTop;
     const minutes = getMinutesFromY(y);
-    
+
     setIsDragging(true);
     setDragStart(minutes);
     setDragCurrent(minutes + SNAP_MINUTES);
@@ -185,10 +198,10 @@ const Timeline: React.FC<TimelineProps> = ({ events, onSave, selectedDate }) => 
     if (editingEventId) return;
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
-    
+
     const y = e.touches[0].clientY - rect.top + containerRef.current!.scrollTop;
     const minutes = getMinutesFromY(y);
-    
+
     setIsDragging(true);
     setDragStart(minutes);
     setDragCurrent(minutes + SNAP_MINUTES);
@@ -260,20 +273,30 @@ const Timeline: React.FC<TimelineProps> = ({ events, onSave, selectedDate }) => 
           <Clock className="w-4 h-4 mr-2" />
           Timeline (Drag to create)
         </h2>
-        <button 
-          onClick={() => clientId ? login() : alert("Google Client IDが設定されていません。.envファイルを確認してください。")}
+        <button
+          onClick={() => {
+            if (isValidClientId) {
+              try {
+                login();
+              } catch (error) {
+                console.error('Login invocation failed:', error);
+                alert("Failed to start Google Login. Please verify your Google Client ID configuration.");
+              }
+            } else {
+              alert("Google Client ID is invalid or not set. Please check your .env file and ensuring it matches *.apps.googleusercontent.com");
+            }
+          }}
           disabled={isSyncing}
-          className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider transition-colors ${
-            !clientId ? 'text-rose-400 opacity-60' : 'text-paper-text/40 hover:text-paper-text'
-          }`}
-          title={!clientId ? "Google Client IDが未設定です" : "Googleカレンダーと同期"}
+          className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider transition-colors ${!isValidClientId ? 'text-rose-400 opacity-60' : 'text-paper-text/40 hover:text-paper-text'
+            }`}
+          title={!isValidClientId ? "Google Client ID invalid" : "Sync with Google Calendar"}
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
-          {isSyncing ? 'Syncing...' : clientId ? 'Sync with Google' : 'Config Error'}
+          {isSyncing ? 'Syncing...' : isValidClientId ? 'Sync with Google' : 'Config Error'}
         </button>
       </div>
-      
-      <div 
+
+      <div
         ref={containerRef}
         className="relative flex-grow overflow-y-auto custom-scrollbar select-none pr-4 pl-16 touch-none"
         style={{ height: '700px' }}
@@ -308,11 +331,11 @@ const Timeline: React.FC<TimelineProps> = ({ events, onSave, selectedDate }) => 
               <div
                 key={event.id}
                 className={`absolute mx-0.5 rounded-lg border border-white/20 shadow-sm p-2 overflow-hidden cursor-pointer transition-all hover:scale-[1.01] hover:z-20 ${event.color || 'bg-paper-text/10'} text-white group pointer-events-auto`}
-                style={{ 
-                  top, 
+                style={{
+                  top,
                   height,
                   left: `${event.leftOffset * 100}%`,
-                  width: `calc(${event.widthPct * 100}% - 4px)` 
+                  width: `calc(${event.widthPct * 100}% - 4px)`
                 }}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -323,7 +346,7 @@ const Timeline: React.FC<TimelineProps> = ({ events, onSave, selectedDate }) => 
                   <span className="text-[9px] font-bold opacity-80 leading-none">
                     {event.startTime} - {event.endTime}
                   </span>
-                  <button 
+                  <button
                     onClick={(e) => { e.stopPropagation(); deleteEvent(event.id); }}
                     className="opacity-0 group-hover:opacity-100 p-0.5 hover:bg-black/10 rounded transition-opacity"
                   >
@@ -331,7 +354,7 @@ const Timeline: React.FC<TimelineProps> = ({ events, onSave, selectedDate }) => 
                   </button>
                 </div>
                 <p className="text-xs font-medium mt-1 leading-tight line-clamp-3">
-                  {event.text || '(クリックして入力)'}
+                  {event.text || '(Click to edit)'}
                 </p>
               </div>
             );
@@ -339,7 +362,7 @@ const Timeline: React.FC<TimelineProps> = ({ events, onSave, selectedDate }) => 
 
           {/* Drag Preview */}
           {isDragging && dragStart !== null && dragCurrent !== null && (
-            <div 
+            <div
               className="absolute left-0 right-0 mx-1 bg-paper-text/20 rounded-lg border-2 border-dashed border-paper-text/30 pointer-events-none"
               style={{
                 top: ((dragStart - HOURS[0] * 60) / 60) * SLOT_HEIGHT,
@@ -355,7 +378,7 @@ const Timeline: React.FC<TimelineProps> = ({ events, onSave, selectedDate }) => 
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-paper-text/20 backdrop-blur-sm" onClick={() => setEditingEventId(null)}>
           <div className="w-full max-w-sm bg-cream-50 rounded-2xl shadow-2xl border border-paper-border p-6" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-4">
-              <h3 className="font-serif italic font-bold text-paper-text">予定の編集</h3>
+              <h3 className="font-serif italic font-bold text-paper-text">Edit Event</h3>
               <button onClick={() => setEditingEventId(null)} className="p-1 hover:bg-cream-200 rounded-full transition-colors">
                 <X className="w-5 h-5" />
               </button>
@@ -365,24 +388,24 @@ const Timeline: React.FC<TimelineProps> = ({ events, onSave, selectedDate }) => 
               className="w-full bg-white border border-paper-border/30 rounded-xl p-4 focus:outline-none focus:ring-1 focus:ring-paper-border/50 min-h-[100px] text-sm mb-4 shadow-inner"
               value={editingText}
               onChange={(e) => setEditingText(e.target.value)}
-              placeholder="何をする予定ですか？"
+              placeholder="What are you planning?"
             />
             <div className="flex justify-end gap-2">
-              <button 
+              <button
                 onClick={() => deleteEvent(editingEventId)}
                 className="flex items-center px-4 py-2 text-rose-500 hover:bg-rose-50 rounded-xl transition-colors text-sm font-medium"
               >
                 <Trash2 className="w-4 h-4 mr-2" />
-                削除
+                Delete
               </button>
-              <button 
+              <button
                 onClick={() => {
                   updateEventText(editingEventId, editingText);
                   setEditingEventId(null);
                 }}
                 className="px-6 py-2 bg-paper-text text-cream-50 rounded-xl hover:opacity-90 transition-opacity text-sm font-medium"
               >
-                保存して閉じる
+                Save & Close
               </button>
             </div>
           </div>

@@ -49,7 +49,7 @@ const HistoryView: React.FC<HistoryViewProps> = ({ onEntrySelect }) => {
           id: entry.id,
           date: entry.date,
           type: 'daily',
-          title: new Date(entry.date).toLocaleDateString('ja-JP', { year: 'numeric', month: 'short', day: 'numeric', weekday: 'short' }),
+          title: new Date(entry.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', weekday: 'short' }),
           content: texts.slice(0, 3).join(' / '),
           timestamp: new Date(entry.date).getTime()
         });
@@ -67,11 +67,12 @@ const HistoryView: React.FC<HistoryViewProps> = ({ onEntrySelect }) => {
 
       const content = texts.join(' ');
       if (!searchQuery || content.toLowerCase().includes(searchQuery.toLowerCase())) {
+        const [y, w] = entry.id.split('-');
         allResults.push({
           id: entry.id,
           date: entry.startDate,
           type: 'weekly',
-          title: `Week ${entry.id.split('-')[1]}, ${entry.id.split('-')[0]}`,
+          title: `Week ${w}, ${y}`,
           content: entry.intention || texts.slice(0, 2).join(' / '),
           timestamp: new Date(entry.startDate).getTime()
         });
@@ -89,11 +90,12 @@ const HistoryView: React.FC<HistoryViewProps> = ({ onEntrySelect }) => {
       const content = texts.join(' ');
       if (!searchQuery || content.toLowerCase().includes(searchQuery.toLowerCase())) {
         const [y, m] = entry.id.split('-');
+        const monthName = new Date(parseInt(y), parseInt(m) - 1).toLocaleString('en-US', { month: 'long' });
         allResults.push({
           id: entry.id,
           date: entry.id,
           type: 'monthly',
-          title: `${y}年 ${parseInt(m)}月`,
+          title: `${monthName} ${y}`,
           content: entry.intention || entry.reflection || texts.slice(0, 2).join(' / '),
           timestamp: new Date(parseInt(y), parseInt(m) - 1, 1).getTime()
         });
@@ -114,7 +116,7 @@ const HistoryView: React.FC<HistoryViewProps> = ({ onEntrySelect }) => {
           id: entry.id,
           date: entry.id,
           type: 'yearly',
-          title: `${entry.id}年 Yearly Overview`,
+          title: `${entry.id} Yearly Overview`,
           content: entry.theme || entry.reflection || texts.slice(0, 2).join(' / '),
           timestamp: new Date(parseInt(entry.id), 0, 1).getTime()
         });
@@ -139,7 +141,7 @@ const HistoryView: React.FC<HistoryViewProps> = ({ onEntrySelect }) => {
     <div className="p-6 md:p-10 min-h-screen">
       <header className="mb-10 border-b border-paper-border pb-8">
         <h1 className="text-4xl font-serif text-paper-text italic font-bold tracking-tight mb-6">Archive & Search</h1>
-        
+
         <div className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-grow">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-paper-text/30" />
@@ -147,11 +149,11 @@ const HistoryView: React.FC<HistoryViewProps> = ({ onEntrySelect }) => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="過去の記録をキーワードで検索..."
+              placeholder="Search your journal by keywords..."
               className="w-full bg-cream-50 border border-paper-border/30 rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-paper-border/20 shadow-inner text-sm transition-all"
             />
           </div>
-          
+
           <div className="flex gap-2 p-1 bg-cream-50 rounded-2xl border border-paper-border/30 shadow-inner overflow-x-auto no-scrollbar">
             {(['all', 'daily', 'weekly', 'monthly', 'yearly'] as const).map((t) => (
               <button
@@ -159,8 +161,8 @@ const HistoryView: React.FC<HistoryViewProps> = ({ onEntrySelect }) => {
                 onClick={() => setFilterType(t)}
                 className={`
                   px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap
-                  ${filterType === t 
-                    ? 'bg-paper-text text-cream-50 shadow-md' 
+                  ${filterType === t
+                    ? 'bg-paper-text text-cream-50 shadow-md'
                     : 'text-paper-text/40 hover:bg-cream-100'}
                 `}
               >
@@ -207,9 +209,9 @@ const HistoryView: React.FC<HistoryViewProps> = ({ onEntrySelect }) => {
                 </div>
                 <ChevronRight className="w-5 h-5 text-paper-text/20 group-hover:text-paper-text group-hover:translate-x-1 transition-all" />
               </div>
-              
+
               <p className="text-sm font-serif text-paper-text/60 leading-relaxed italic line-clamp-2 pl-11">
-                {result.content || '(本文なし)'}
+                {result.content || '(Empty content)'}
               </p>
             </button>
           ))
@@ -218,13 +220,13 @@ const HistoryView: React.FC<HistoryViewProps> = ({ onEntrySelect }) => {
             <div className="w-16 h-16 bg-cream-50 rounded-full border border-dashed border-paper-border/40 flex items-center justify-center mx-auto mb-4">
               <Search className="w-6 h-6 text-paper-text/20" />
             </div>
-            <p className="text-paper-text/30">該当する記録が見つかりませんでした。</p>
+            <p className="text-paper-text/30">No matching records found.</p>
             {searchQuery && (
-              <button 
+              <button
                 onClick={() => setSearchQuery('')}
                 className="text-xs text-paper-text/60 border-b border-paper-border hover:text-paper-text transition-colors"
               >
-                検索条件をクリア
+                Clear search
               </button>
             )}
           </div>

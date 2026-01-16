@@ -14,12 +14,16 @@ export interface WeeklyEntry {
   mostImportantTasks: WeeklyTask[];
   secondaryTasks: WeeklyTask[];
   additionalTasks: WeeklyTask[];
-  yearlyGoalActions?: { 
+  yearlyGoalActions?: {
     [goalIndex: number]: {
+      id: string;
       text: string;
       completed: boolean;
-    } 
-  }; // 年間目標に基づいた今週のアクション
+    }[]
+  }; // 年間目標に基づいた今週のアクション (配列)
+  nextWeekGoals?: WeeklyTask[]; // 来週への種まき
+  reflection?: string;
+  gratitude?: string;
   updatedAt: number;
 }
 
@@ -69,7 +73,10 @@ export interface MonthlyEntry {
   id: string; // YYYY-MM
   intention: string;
   goals: { id: string; text: string; completed: boolean }[];
+  nextMonthGoals?: { id: string; text: string; completed: boolean }[];
   reflection: string;
+  gratitude?: string;
+  learning?: string;
   updatedAt: number;
 }
 
@@ -77,11 +84,11 @@ export interface YearlyGoal {
   id: string;
   text: string;
   completed: boolean;
-  monthlyActions: { 
+  monthlyActions: {
     [key: number]: {
       text: string;
       completed: boolean;
-    } 
+    }
   }; // 1-12
   reflection?: string; // 各目標の振り返り
 }
@@ -94,11 +101,27 @@ export interface YearlyEntry {
   updatedAt: number;
 }
 
+export interface MandalaEntry {
+  id: string; // e.g., 'main'
+  mainGoal: string;
+  // Visual layout:
+  // A B C
+  // H X D
+  // G F E
+  // We can store subGoals as an array of 8 items, indices 0-7 mapping to A-H
+  subGoals: {
+    text: string;
+    items: string[]; // 8 items for the spread-out chart
+  }[];
+  updatedAt: number;
+}
+
 export class JournalDatabase extends Dexie {
   weeklyEntries!: Table<WeeklyEntry>;
   dailyEntries!: Table<DailyEntry>;
   monthlyEntries!: Table<MonthlyEntry>;
   yearlyEntries!: Table<YearlyEntry>;
+  mandalaEntries!: Table<MandalaEntry>;
   habits!: Table<Habit>;
 
   constructor() {
@@ -109,6 +132,12 @@ export class JournalDatabase extends Dexie {
       monthlyEntries: 'id, updatedAt',
       yearlyEntries: 'id, updatedAt',
       habits: 'id, name'
+    });
+    this.version(7).stores({
+      mandalaEntries: 'id, updatedAt'
+    });
+    this.version(8).stores({
+      habits: 'id, name, createdAt'
     });
   }
 }

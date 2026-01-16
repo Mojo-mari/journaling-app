@@ -9,24 +9,49 @@ interface EditableFieldProps {
   type?: 'input' | 'textarea';
 }
 
-const EditableField: React.FC<EditableFieldProps> = ({ 
-  value, 
-  onSave, 
+const EditableField: React.FC<EditableFieldProps> = ({
+  value,
+  onSave,
   onChange,
-  placeholder, 
-  className, 
-  type = 'input' 
+  placeholder,
+  className,
+  type = 'input'
 }) => {
   const [localValue, setLocalValue] = useState(value);
+  const [lastSavedValue, setLastSavedValue] = useState(value);
+  const [isFocused, setIsFocused] = useState(false);
 
+  // Sync with prop value ONLY when it's different from our last saved value
+  // and we are NOT currently focused (to avoid jumping)
   useEffect(() => {
-    setLocalValue(value);
-  }, [value]);
+    if (value !== lastSavedValue && !isFocused) {
+      setLocalValue(value);
+      setLastSavedValue(value);
+    }
+  }, [value, lastSavedValue, isFocused]);
+
+  // Handle auto-save with debounce
+  useEffect(() => {
+    if (localValue === lastSavedValue) return;
+
+    const timeoutId = setTimeout(() => {
+      onSave(localValue);
+      setLastSavedValue(localValue);
+    }, 1000);
+
+    return () => clearTimeout(timeoutId);
+  }, [localValue, onSave, lastSavedValue]);
 
   const handleBlur = () => {
-    if (localValue !== value) {
+    setIsFocused(false);
+    if (localValue !== lastSavedValue) {
       onSave(localValue);
+      setLastSavedValue(localValue);
     }
+  };
+
+  const handleFocus = () => {
+    setIsFocused(true);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -43,6 +68,7 @@ const EditableField: React.FC<EditableFieldProps> = ({
         value={localValue}
         onChange={handleChange}
         onBlur={handleBlur}
+        onFocus={handleFocus}
         placeholder={placeholder}
         className={className}
       />
@@ -55,6 +81,7 @@ const EditableField: React.FC<EditableFieldProps> = ({
       value={localValue}
       onChange={handleChange}
       onBlur={handleBlur}
+      onFocus={handleFocus}
       placeholder={placeholder}
       className={className}
     />
